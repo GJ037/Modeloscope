@@ -7,7 +7,6 @@ class ModelLoader:
     def load(self, file_path: str):
         """Handles loading and validation of 3D files."""
 
-
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
 
@@ -20,13 +19,11 @@ class ModelLoader:
 
         load_time = time.perf_counter() - start
 
-        # Case 1: Single model
         if isinstance(loaded, trimesh.Trimesh):
             if len(loaded.vertices) == 0:
                 raise RuntimeError("model contains no vertices.")
             return loaded, load_time
 
-        # Case 2: Scene
         if isinstance(loaded, trimesh.Scene):
 
             mesh_count = len(loaded.geometry)
@@ -40,7 +37,6 @@ class ModelLoader:
                     "3D Metrics currently supports single-model files only."
                 )
 
-            # Exactly one model in scene
             model = next(iter(loaded.geometry.values()))
 
             if not isinstance(model, trimesh.Trimesh):
