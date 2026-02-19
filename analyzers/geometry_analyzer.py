@@ -2,24 +2,24 @@ import numpy as np
 
 class GeometryAnalyzer:
 
-    def analyze(self, mesh):
+    def analyze(self, model):
 
-        surface_area = float(mesh.area)
-        volume = float(mesh.volume) if mesh.is_watertight else 0.0
+        surface_area = float(model.area)
+        volume = float(model.volume) if model.is_watertight else 0.0
 
-        bbox = mesh.bounding_box.extents
-        center = mesh.center_mass
+        bbox = model.bounding_box.extents
+        center = model.center_mass
 
-        edge_lengths = mesh.edges_unique_length
+        edge_lengths = model.edges_unique_length
         edge_min = float(np.min(edge_lengths)) if len(edge_lengths) else 0.0
         edge_max = float(np.max(edge_lengths)) if len(edge_lengths) else 0.0
         edge_mean = float(np.mean(edge_lengths)) if len(edge_lengths) else 0.0
 
         area = surface_area if surface_area > 0 else 1.0
-        face_density_area = float(len(mesh.faces) / area)
+        face_density_area = float(len(model.faces) / area)
 
         volume_safe = volume if volume > 0 else 1.0
-        face_density_volume = float(len(mesh.faces) / volume_safe)
+        face_density_volume = float(len(model.faces) / volume_safe)
 
         return {
             "surface_area": round(surface_area, 5),

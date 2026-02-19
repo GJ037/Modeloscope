@@ -2,10 +2,10 @@ import psutil, os
 
 class PerformanceAnalyzer:
 
-    def analyze(self, mesh, load_time=0.0):
+    def analyze(self, model, load_time=0.0):
 
-        num_faces = int(len(mesh.faces))
-        num_vertices = int(len(mesh.vertices))
+        num_faces = int(len(model.faces))
+        num_vertices = int(len(model.vertices))
 
         try:
             process = psutil.Process(os.getpid())
