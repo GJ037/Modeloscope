@@ -1,0 +1,16 @@
+# Virtual Environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# STL Models
+models/
+
+# Generated output
+outputs/
+
+# Models
+*.STL
+*.obj

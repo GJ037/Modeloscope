@@ -1,26 +1,35 @@
-import numpy as np
-
 class TopologyAnalyzer:
+    """
+    Computes topological properties of the 3D mesh.
+
+    Calculates:
+        - Vertex count
+        - Face count
+        - Edge count
+        - Euler characteristic    
+    """
 
     def analyze(self, model):
 
-        vertex_count = int(len(model.vertices))
-        face_count = int(len(model.faces))
-        edge_count = int(len(model.edges_unique))
+        if model is None:
+            print("[TopologyAnalyzer ERROR] model is None")
+            return None
 
-        euler_number = int(model.euler_number)
-        watertight = bool(model.is_watertight)
+        try:
+            vertex_count = int(len(model.vertices))
+            face_count = int(len(model.faces))
+            edge_count = int(len(model.edges_unique))
 
-        components = int(len(model.split(only_watertight=False)))
+            euler_number = int(model.euler_number)
 
-        non_manifold_edges = int(np.sum(model.edges_unique_counts > 2))
+            return {
+                "vertex_count": vertex_count,
+                "face_count": face_count,
+                "edge_count": edge_count,
+                "euler_number": euler_number
+            }
 
-        return {
-            "vertex_count": vertex_count,
-            "face_count": face_count,
-            "edge_count": edge_count,
-            "euler_number": euler_number,
-            "watertight": watertight,
-            "connected_components": components,
-            "non_manifold_edges": non_manifold_edges
-        }
+        except Exception as e:
+            print(f"[TopologyAnalyzer ERROR] {e}")
+            return None
+            
