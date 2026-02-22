@@ -1,14 +1,17 @@
 import trimesh
-import time, os
+import time
+import os
 
 
 class ModelLoader:
 
     def load(self, file_path: str):
-        """Handles loading and validation of 3D files."""
 
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
+
+        file_size = os.path.getsize(file_path)
+        file_name = os.path.basename(file_path)
 
         start = time.perf_counter()
 
@@ -19,29 +22,41 @@ class ModelLoader:
 
         load_time = time.perf_counter() - start
 
+        # Single mesh
         if isinstance(loaded, trimesh.Trimesh):
+
             if len(loaded.vertices) == 0:
-                raise RuntimeError("model contains no vertices.")
-            return loaded, load_time
+                raise RuntimeError("Model contains no vertices.")
 
-        if isinstance(loaded, trimesh.Scene):
+            geometry_count = 1
+            model = loaded
 
-            mesh_count = len(loaded.geometry)
+        # Scene
+        elif isinstance(loaded, trimesh.Scene):
 
-            if mesh_count == 0:
+            geometry_count = len(loaded.geometry)
+
+            if geometry_count == 0:
                 raise RuntimeError("Scene contains no model geometry.")
 
-            if mesh_count > 1:
-                raise RuntimeError(
-                    f"File contains multiple meshes ({mesh_count}). "
-                    "3D Metrics currently supports single-model files only."
-                )
+            meshes = [
+                g for g in loaded.geometry.values()
+                if isinstance(g, trimesh.Trimesh)
+            ]
 
-            model = next(iter(loaded.geometry.values()))
+            if len(meshes) == 0:
+                raise RuntimeError("No valid mesh geometry found in scene.")
 
-            if not isinstance(model, trimesh.Trimesh):
-                raise RuntimeError("Invalid geometry type in scene.")
+            model = trimesh.util.concatenate(meshes)
 
-            return model, load_time
+        else:
+            raise RuntimeError("Unsupported file format or corrupted file.")
 
-        raise RuntimeError("Unsupported file format or corrupted file.")
+        meta = {
+            "file_name": file_name,
+            "file_size_mb": round(file_size / (1024 * 1024), 3),
+            "geometry_count": geometry_count,
+            "load_time": round(load_time, 5)
+        }
+
+        return model, meta
