@@ -28,7 +28,6 @@ class PerformanceAnalyzer:
             triangle_rate = round(num_faces / (load_time * 1000.0), 5) if load_time > 0 else 0.0
 
             return {
-                "load_time": round(float(load_time), 5),
                 "memory_usage_mb": memory_use,
                 "complexity_index": complexity_index,
                 "triangle_rate": triangle_rate
