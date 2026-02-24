@@ -1,8 +1,8 @@
 from core.loader import ModelLoader
-from analyzers.topology_analyzer import TopologyAnalyzer
-from analyzers.geometry_analyzer import GeometryAnalyzer
-from analyzers.quality_analyzer import QualityAnalyzer
-from analyzers.performance_analyzer import PerformanceAnalyzer
+from analyzer.topology_analyzer import TopologyAnalyzer
+from analyzer.geometry_analyzer import GeometryAnalyzer
+from analyzer.quality_analyzer import QualityAnalyzer
+from analyzer.performance_analyzer import PerformanceAnalyzer
 
 
 class AnalyzerRunner:
