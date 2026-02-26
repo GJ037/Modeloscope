@@ -5,18 +5,28 @@ from tkinter import ttk
 class BaseInterface(tk.Tk):
     """Main App window that manages navigation."""
 
-    def __init__(self, title="Modeloscope", size="800x768"):
+    def __init__(self, title="Modeloscope", size="1024x768"):
         super().__init__()
         self.title(title)
         self.geometry(size)
-        self.resizable(False, False)
+
+        # Make resizable
+        self.resizable(True, True)
+        self.minsize(1024, 768)
 
         self.style = ttk.Style()
         self.style.configure("TButton", font=("Segoe UI", 10), padding=5)
         self.style.configure("TLabel", font=("Segoe UI", 10))
 
         container = ttk.Frame(self)
-        container.pack(fill="both", expand=True)
+        container.grid(row=0, column=0, sticky="nsew")
+
+        # Make window expand properly
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+
+        container.rowconfigure(0, weight=1)
+        container.columnconfigure(0, weight=1)
 
         self.frames = {}
         self.container = container
