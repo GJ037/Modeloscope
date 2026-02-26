@@ -131,6 +131,8 @@ class AnalyzeInterface(BaseScreen):
                 )
                 return
 
+            self.display_report(report)
+
         except Exception as e:
             messagebox.showerror("Analysis Error", str(e))
 
