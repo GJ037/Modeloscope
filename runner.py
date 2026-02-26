@@ -4,14 +4,21 @@ from interface.analyze_interface import AnalyzeInterface
 
 
 def main():
-    app = BaseInterface()
+    """
+    Entry point of Modeloscope UI application.
+    """
 
-    app.add_frame("HomeInterface", HomeInterface)
-    app.add_frame("AnalyzeInterface", AnalyzeInterface)
+    try:
+        app = BaseInterface()
 
-    app.show_frame("HomeInterface")
+        app.add_frame("HomeInterface", HomeInterface)
+        app.add_frame("AnalyzeInterface", AnalyzeInterface)
 
-    app.mainloop()
+        app.show_frame("HomeInterface")
+        app.mainloop()
+
+    except Exception as e:
+        print(f"[Application ERROR] {e}")
 
 
 if __name__ == "__main__":
