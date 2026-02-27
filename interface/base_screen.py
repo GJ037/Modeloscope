@@ -1,6 +1,5 @@
 from tkinter import ttk
 
-
 class BaseScreen(ttk.Frame):
     """
     BaseScreen

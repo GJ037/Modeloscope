@@ -1,7 +1,6 @@
 from interface.base_screen import BaseScreen
 from tkinter import ttk
 
-
 class HomeInterface(BaseScreen):
     """
     HomeInterface

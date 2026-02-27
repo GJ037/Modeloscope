@@ -1,9 +1,7 @@
-import tkinter as tk
-import os
+import tkinter as tk, os
 from tkinter import ttk, filedialog, messagebox
 from analyze import AnalyzerRunner
 from interface.base_screen import BaseScreen
-
 
 class AnalyzeInterface(BaseScreen):
     """
@@ -23,7 +21,7 @@ class AnalyzeInterface(BaseScreen):
     def build_content(self):
         try:
             self.content.columnconfigure(0, weight=1)
-            self.content.rowconfigure(3, weight=1)
+            self.content.rowconfigure(4, weight=1)
 
             # File selection
             file_frame = ttk.Frame(self.content)
@@ -43,6 +41,46 @@ class AnalyzeInterface(BaseScreen):
                 width=12,
                 command=self.browse_file
             ).pack(side="left", padx=5)
+            
+            # Analyzer Toggles
+            toggle_frame = ttk.LabelFrame(self.content, text="Select Analyzers")
+            toggle_frame.grid(row=1, column=0, pady=10)
+
+            self.meta_var = tk.BooleanVar(value=True)
+            self.geometry_var = tk.BooleanVar(value=True)
+            self.topology_var = tk.BooleanVar(value=True)
+            self.quality_var = tk.BooleanVar(value=True)
+            self.performance_var = tk.BooleanVar(value=True)
+
+            ttk.Checkbutton(
+                toggle_frame,
+                text="Meta",
+                variable=self.meta_var
+            ).grid(row=0, column=0, padx=15, pady=5)
+
+            ttk.Checkbutton(
+                toggle_frame,
+                text="Topology",
+                variable=self.topology_var
+            ).grid(row=0, column=1, padx=15, pady=5)
+
+            ttk.Checkbutton(
+                toggle_frame,
+                text="Geometry",
+                variable=self.geometry_var
+            ).grid(row=0, column=2, padx=15, pady=5)
+
+            ttk.Checkbutton(
+                toggle_frame,
+                text="Quality",
+                variable=self.quality_var
+            ).grid(row=0, column=3, padx=15, pady=5)
+
+            ttk.Checkbutton(
+                toggle_frame,
+                text="Performance",
+                variable=self.performance_var
+            ).grid(row=0, column=4, padx=15, pady=5)
 
             # Run button
             ttk.Button(
@@ -50,18 +88,18 @@ class AnalyzeInterface(BaseScreen):
                 text="Run Analysis",
                 width=30,
                 command=self.run_analysis
-            ).grid(row=1, column=0, pady=15)
+            ).grid(row=2, column=0, pady=15)
 
             # Output label
             ttk.Label(
                 self.content,
                 text="Output",
                 font=("Segoe UI", 10, "bold")
-            ).grid(row=2, column=0, pady=(10, 5))
+            ).grid(row=3, column=0, pady=(10, 5))
 
             # Console area
             output_frame = ttk.Frame(self.content)
-            output_frame.grid(row=3, column=0, sticky="nsew", padx=120)
+            output_frame.grid(row=4, column=0, sticky="nsew", padx=120)
 
             output_frame.columnconfigure(0, weight=1)
             output_frame.rowconfigure(0, weight=1)
@@ -121,7 +159,27 @@ class AnalyzeInterface(BaseScreen):
             return
 
         try:
-            runner = AnalyzerRunner(file_path)
+            runner = AnalyzerRunner(
+                file_path,
+                run_meta=self.meta_var.get(),
+                run_geometry=self.geometry_var.get(),
+                run_topology=self.topology_var.get(),
+                run_quality=self.quality_var.get(),
+                run_performance=self.performance_var.get()
+)
+
+            if not any([
+                self.meta_var.get(),
+                self.geometry_var.get(),
+                self.topology_var.get(),
+                self.quality_var.get(),
+                self.performance_var.get()
+            ]):
+                messagebox.showwarning(
+                    "No Analyzer Selected",
+                    "Please select at least one analyzer."
+                )
+
             report = runner.run()
 
             if report is None:

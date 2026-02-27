@@ -4,7 +4,6 @@ from analyzer.geometry_analyzer import GeometryAnalyzer
 from analyzer.quality_analyzer import QualityAnalyzer
 from analyzer.performance_analyzer import PerformanceAnalyzer
 
-
 class AnalyzerRunner:
     """
     Orchestrates the full analysis pipeline.
@@ -19,8 +18,21 @@ class AnalyzerRunner:
         None on failure
     """
 
-    def __init__(self, file_path: str):
+    def __init__(
+        self,
+        file_path,
+        run_meta=True,
+        run_geometry=True,
+        run_topology=True,
+        run_quality=True,
+        run_performance=True
+    ):
         self.file_path = file_path
+        self.run_meta = run_meta
+        self.run_geometry = run_geometry
+        self.run_topology = run_topology
+        self.run_quality = run_quality
+        self.run_performance = run_performance
 
     def run(self):
 
@@ -35,35 +47,24 @@ class AnalyzerRunner:
             model, meta = loaded
 
             report = {}
-            report["meta"] = meta
-            report["Topology"] = TopologyAnalyzer().analyze(model)
-            report["Geometry"] = GeometryAnalyzer().analyze(model)
-            report["Quality"] = QualityAnalyzer().analyze(model)
-            report["Performance"] = PerformanceAnalyzer().analyze(model, meta["load_time"])
+            
+            if self.run_meta:
+                report["meta"] = meta
+
+            if self.run_topology:
+                report["Topology"] = TopologyAnalyzer().analyze(model)
+
+            if self.run_geometry:
+                report["Geometry"] = GeometryAnalyzer().analyze(model)
+
+            if self.run_quality:
+                report["Quality"] = QualityAnalyzer().analyze(model)
+
+            if self.run_performance:
+                report["Performance"] = PerformanceAnalyzer().analyze(model, meta["load_time"])
 
             return report
 
         except Exception as e:
             print(f"[AnalyzerRunner ERROR] {e}")
             return None
-
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) < 2:
-        print("Usage: python analyze.py <model_file>")
-        sys.exit(1)
-
-    path = sys.argv[1]
-
-    try:
-        runner = AnalyzerRunner(path)
-        report = runner.run()
-
-        for section, data in report.items():
-            print(f"\n--- {section} ---")
-            for key, value in data.items():
-                print(f"{key}: {value}")
-
-    except Exception as e:
-        print(f"Error: {e}")
