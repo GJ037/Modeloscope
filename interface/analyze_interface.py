@@ -141,15 +141,23 @@ class AnalyzeInterface(BaseScreen):
             self.console.config(state="normal")
             self.console.delete("1.0", tk.END)
 
+            # Styling
+            self.console.tag_configure("section", font=("Segoe UI", 11, "bold"))
+            self.console.tag_configure("metric", font=("Consolas", 10))
+
             for section, data in report.items():
-                self.console.insert(tk.END, f"{section}\n")
-                self.console.insert(tk.END, "-" * 40 + "\n")
+
+                # Section header
+                self.console.insert(tk.END, f"{section.upper()}\n", "section")
+                self.console.insert(tk.END, "=" * 50 + "\n\n", "section")
 
                 if isinstance(data, dict):
                     for key, value in data.items():
-                        self.console.insert(tk.END, f"{key}: {value}\n")
+                        formatted_key = key.replace("_", " ").title()
+                        line = f"{formatted_key:<25} : {value}\n"
+                        self.console.insert(tk.END, line, "metric")
 
-                self.console.insert(tk.END, "\n")
+                self.console.insert(tk.END, "\n\n")
 
             self.console.config(state="disabled")
 
