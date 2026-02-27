@@ -2,7 +2,6 @@ from interface.base_interface import BaseInterface
 from interface.home_interface import HomeInterface
 from interface.analyze_interface import AnalyzeInterface
 
-
 def main():
     """
     Entry point of Modeloscope UI application.
