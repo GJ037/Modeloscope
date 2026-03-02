@@ -5,12 +5,8 @@
 __pycache__/
 *.pyc
 
-# STL Models
+# Project Versions
+versions/
+
+# Test Models
 models/
-
-# Generated output
-outputs/
-
-# Models
-*.STL
-*.obj
