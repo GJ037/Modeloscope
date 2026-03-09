@@ -1,7 +1,7 @@
 import tkinter as tk, os
 from tkinter import ttk, filedialog, messagebox
-from analyze import AnalyzerRunner
 from interface.base_screen import BaseScreen
+from analyze import AnalyzerRunner
 
 class AnalyzeInterface(BaseScreen):
     """
@@ -23,7 +23,6 @@ class AnalyzeInterface(BaseScreen):
             self.content.columnconfigure(0, weight=1)
             self.content.rowconfigure(4, weight=1)
 
-            # File selection
             file_frame = ttk.Frame(self.content)
             file_frame.grid(row=0, column=0, pady=10)
 
@@ -42,7 +41,6 @@ class AnalyzeInterface(BaseScreen):
                 command=self.browse_file
             ).pack(side="left", padx=5)
             
-            # Analyzer Toggles
             toggle_frame = ttk.LabelFrame(self.content, text="Select Analyzers")
             toggle_frame.grid(row=1, column=0, pady=10)
 
@@ -82,7 +80,6 @@ class AnalyzeInterface(BaseScreen):
                 variable=self.performance_var
             ).grid(row=0, column=4, padx=15, pady=5)
 
-            # Run button
             ttk.Button(
                 self.content,
                 text="Run Analysis",
@@ -90,14 +87,12 @@ class AnalyzeInterface(BaseScreen):
                 command=self.run_analysis
             ).grid(row=2, column=0, pady=15)
 
-            # Output label
             ttk.Label(
                 self.content,
                 text="Output",
                 font=("Segoe UI", 10, "bold")
             ).grid(row=3, column=0, pady=(10, 5))
 
-            # Console area
             output_frame = ttk.Frame(self.content)
             output_frame.grid(row=4, column=0, sticky="nsew", padx=120)
 
@@ -135,8 +130,7 @@ class AnalyzeInterface(BaseScreen):
             if not file_path:
                 return
 
-            valid_ext = (".stl", ".obj", ".ply")
-            if not file_path.lower().endswith(valid_ext):
+            if not file_path.lower().endswith((".stl", ".obj", ".ply")):
                 messagebox.showerror(
                     "Invalid File",
                     "Only STL, OBJ, and PLY files are supported."
@@ -158,6 +152,19 @@ class AnalyzeInterface(BaseScreen):
             )
             return
 
+        if not any([
+            self.meta_var.get(),
+            self.geometry_var.get(),
+            self.topology_var.get(),
+            self.quality_var.get(),
+            self.performance_var.get()
+        ]):
+            messagebox.showwarning(
+                "No Analyzer Selected",
+                "Please select at least one analyzer."
+            )
+            return
+
         try:
             runner = AnalyzerRunner(
                 file_path,
@@ -166,19 +173,7 @@ class AnalyzeInterface(BaseScreen):
                 run_topology=self.topology_var.get(),
                 run_quality=self.quality_var.get(),
                 run_performance=self.performance_var.get()
-)
-
-            if not any([
-                self.meta_var.get(),
-                self.geometry_var.get(),
-                self.topology_var.get(),
-                self.quality_var.get(),
-                self.performance_var.get()
-            ]):
-                messagebox.showwarning(
-                    "No Analyzer Selected",
-                    "Please select at least one analyzer."
-                )
+            )
 
             report = runner.run()
 
@@ -199,13 +194,11 @@ class AnalyzeInterface(BaseScreen):
             self.console.config(state="normal")
             self.console.delete("1.0", tk.END)
 
-            # Styling
             self.console.tag_configure("section", font=("Segoe UI", 11, "bold"))
             self.console.tag_configure("metric", font=("Consolas", 10))
 
             for section, data in report.items():
 
-                # Section header
                 self.console.insert(tk.END, f"{section.upper()}\n", "section")
                 self.console.insert(tk.END, "=" * 50 + "\n\n", "section")
 

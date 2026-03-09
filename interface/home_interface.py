@@ -24,6 +24,13 @@ class HomeInterface(BaseScreen):
                 command=lambda: self.controller.show_frame("AnalyzeInterface")
             ).pack(pady=12)
 
+            ttk.Button(
+                self.content,
+                text="Render Model",
+                width=30,
+                command=lambda: self.controller.show_frame("RenderInterface")
+            ).pack(pady=12)
+
             self.add_footer_button(
                 "Exit Application",
                 self.controller.exit_app
