@@ -1,6 +1,7 @@
 import tkinter as tk, os
 from tkinter import ttk, filedialog, messagebox
 from interface.base_screen import BaseScreen
+from core.renderer import ModelRenderer
 from render import RenderRunner
 
 class RenderInterface(BaseScreen):
@@ -16,6 +17,7 @@ class RenderInterface(BaseScreen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller, title="Renderer")
         self.selected_file = tk.StringVar()
+        self.renderer = ModelRenderer()
         self.build_content()
 
     def build_content(self):
@@ -69,14 +71,9 @@ class RenderInterface(BaseScreen):
             self.viewer_frame = ttk.Frame(self.content)
             self.viewer_frame.grid(row=3, column=0, sticky="nsew", padx=60, pady=10)
 
-            # Placeholder label
-            ttk.Label(
-                self.viewer_frame,
-                text="Render Viewport",
-                font=("Segoe UI", 12)
-            ).pack(expand=True)
+            # initialize blank viewport
+            self.renderer.initialize(self.viewer_frame)
 
-            # Footer
             self.add_footer_button(
                 "Return to Home",
                 lambda: self.controller.show_frame("HomeInterface")
@@ -133,16 +130,13 @@ class RenderInterface(BaseScreen):
             return
             
         try:
-            for widget in self.viewer_frame.winfo_children():
-                widget.destroy()
-
             runner = RenderRunner(
                 file_path,
                 render_standard=self.standard_var.get(),
                 render_wireframe=self.wireframe_var.get()
             )
             
-            runner.run(self.viewer_frame)
+            runner.run(self.renderer)
 
         except Exception as e:
             messagebox.showerror("Render Error", str(e))
