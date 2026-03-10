@@ -28,7 +28,7 @@ class RenderRunner:
         self.render_standard = render_standard
         self.render_wireframe = render_wireframe
 
-    def run(self, parent):
+    def run(self, engine):
 
         try:
             loader = ModelLoader()
@@ -40,12 +40,10 @@ class RenderRunner:
 
             model, meta = loaded
 
-            engine = ModelRenderer()
-
-            if not engine.initialize(parent):
-                print("[RenderRunner ERROR] Engine initialization failed.")
-                return None
-
+            for child in list(engine.view.scene.children):
+                if child is not engine.view.camera:
+                    child.parent = None
+                
             if self.render_standard:
                 StandardRenderer().render(engine, model)
 
