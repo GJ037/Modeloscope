@@ -1,7 +1,6 @@
 import tkinter as tk, os
 from tkinter import ttk, filedialog, messagebox
 from interface.base_screen import BaseScreen
-from core.renderer import ModelRenderer
 from render import RenderRunner
 
 class RenderInterface(BaseScreen):
@@ -17,7 +16,8 @@ class RenderInterface(BaseScreen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller, title="Renderer")
         self.selected_file = tk.StringVar()
-        self.renderer = ModelRenderer()
+        self.render_mode = tk.StringVar()
+        self.runner = None
         self.build_content()
 
     def build_content(self):
@@ -46,20 +46,26 @@ class RenderInterface(BaseScreen):
             toggle_frame = ttk.LabelFrame(self.content, text="Select Render Mode")
             toggle_frame.grid(row=1, column=0, pady=10)
 
-            self.standard_var = tk.BooleanVar(value=False)
-            self.wireframe_var = tk.BooleanVar(value=False)
-
-            ttk.Checkbutton(
+            ttk.Radiobutton(
                 toggle_frame,
                 text="Standard",
-                variable=self.standard_var
+                variable=self.render_mode,
+                value="standard"
             ).grid(row=0, column=0, padx=15, pady=5)
 
-            ttk.Checkbutton(
+            ttk.Radiobutton(
                 toggle_frame,
                 text="Wireframe",
-                variable=self.wireframe_var
+                variable=self.render_mode,
+                value="wireframe"
             ).grid(row=0, column=1, padx=15, pady=5)
+
+            ttk.Radiobutton(
+                toggle_frame,
+                text="Point Cloud",
+                variable=self.render_mode,
+                value="pointcloud"
+            ).grid(row=0, column=2, padx=15, pady=5)
 
             ttk.Button(
                 self.content,
@@ -68,11 +74,14 @@ class RenderInterface(BaseScreen):
                 command=self.render_model
             ).grid(row=2, column=0, padx=15)
 
-            self.viewer_frame = ttk.Frame(self.content)
-            self.viewer_frame.grid(row=3, column=0, sticky="nsew", padx=60, pady=10)
+            self.viewer_frame = ttk.Frame(
+                self.content,
+                borderwidth=2,
+                relief="solid"
+            )
 
-            # initialize blank viewport
-            self.renderer.initialize(self.viewer_frame)
+            self.viewer_frame.grid(row=3, column=0, sticky="nsew", padx=120, pady=10)
+            self.runner = RenderRunner(self.viewer_frame)
 
             self.add_footer_button(
                 "Return to Home",
@@ -120,8 +129,7 @@ class RenderInterface(BaseScreen):
             return
 
         if not any([
-            self.standard_var.get(),
-            self.wireframe_var.get()
+            self.render_mode.get()
         ]):
             messagebox.showwarning(
                 "No Render Mode Selected",
@@ -130,13 +138,17 @@ class RenderInterface(BaseScreen):
             return
             
         try:
-            runner = RenderRunner(
+            self.runner.render(
                 file_path,
-                render_standard=self.standard_var.get(),
-                render_wireframe=self.wireframe_var.get()
+                mode=self.render_mode.get()
             )
             
-            runner.run(self.renderer)
-
         except Exception as e:
             messagebox.showerror("Render Error", str(e))
+
+    def reset(self):
+        self.selected_file.set("")
+        self.render_mode.set("")
+
+        if self.runner:
+            self.runner.engine.clear()

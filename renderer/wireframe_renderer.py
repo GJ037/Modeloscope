@@ -2,7 +2,7 @@ from vispy import scene
 
 class WireframeRenderer:
     """
-    Renders mesh in wireframe mode.
+    Renders mesh edges.
     """
 
     def render(self, engine, model):
@@ -18,10 +18,10 @@ class WireframeRenderer:
                 pos=model.vertices[edges].reshape(-1, 3),
                 color="white",
                 connect="segments",
-                width=1.0
+                width=0.5
             )
 
-            engine.view.add(lines)
+            engine.add_visual(lines)
             return True
 
         except Exception as e:
