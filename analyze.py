@@ -18,21 +18,9 @@ class AnalyzerRunner:
         None on failure
     """
 
-    def __init__(
-        self,
-        file_path,
-        run_meta=True,
-        run_geometry=True,
-        run_topology=True,
-        run_quality=True,
-        run_performance=True
-    ):
+    def __init__(self, file_path, modes):
         self.file_path = file_path
-        self.run_meta = run_meta
-        self.run_geometry = run_geometry
-        self.run_topology = run_topology
-        self.run_quality = run_quality
-        self.run_performance = run_performance
+        self.modes = modes
 
     def run(self):
 
@@ -48,19 +36,19 @@ class AnalyzerRunner:
 
             report = {}
             
-            if self.run_meta:
-                report["meta"] = meta
+            if "meta" in self.modes:
+                report["Meta"] = meta
 
-            if self.run_topology:
+            if "topology" in self.modes:
                 report["Topology"] = TopologyAnalyzer().analyze(model)
 
-            if self.run_geometry:
+            if "geometry" in self.modes:
                 report["Geometry"] = GeometryAnalyzer().analyze(model)
 
-            if self.run_quality:
+            if "quality" in self.modes:
                 report["Quality"] = QualityAnalyzer().analyze(model)
 
-            if self.run_performance:
+            if "performance" in self.modes:
                 report["Performance"] = PerformanceAnalyzer().analyze(model, meta["load_time"])
 
             return report

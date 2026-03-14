@@ -3,7 +3,7 @@ from vispy.color import Color
 
 class StandardRenderer:
     """
-    Renders mesh in shaded (standard) mode.
+    Renders mesh using shaded triangles.
     """
 
     def render(self, engine, model):
@@ -20,7 +20,7 @@ class StandardRenderer:
                 shading="smooth"
             )
 
-            engine.view.add(mesh)
+            engine.add_visual(mesh)
             return True
 
         except Exception as e:

@@ -41,14 +41,14 @@ class AnalyzeInterface(BaseScreen):
                 command=self.browse_file
             ).pack(side="left", padx=5)
             
-            toggle_frame = ttk.LabelFrame(self.content, text="Select Analyzers")
+            toggle_frame = ttk.LabelFrame(self.content, text="Select Analysis Modes")
             toggle_frame.grid(row=1, column=0, pady=10)
 
-            self.meta_var = tk.BooleanVar(value=True)
-            self.geometry_var = tk.BooleanVar(value=True)
-            self.topology_var = tk.BooleanVar(value=True)
-            self.quality_var = tk.BooleanVar(value=True)
-            self.performance_var = tk.BooleanVar(value=True)
+            self.meta_var = tk.BooleanVar(value=False)
+            self.geometry_var = tk.BooleanVar(value=False)
+            self.topology_var = tk.BooleanVar(value=False)
+            self.quality_var = tk.BooleanVar(value=False)
+            self.performance_var = tk.BooleanVar(value=False)
 
             ttk.Checkbutton(
                 toggle_frame,
@@ -152,13 +152,24 @@ class AnalyzeInterface(BaseScreen):
             )
             return
 
-        if not any([
-            self.meta_var.get(),
-            self.geometry_var.get(),
-            self.topology_var.get(),
-            self.quality_var.get(),
-            self.performance_var.get()
-        ]):
+        modes = []
+
+        if self.meta_var.get():
+            modes.append("meta")
+
+        if self.topology_var.get():
+            modes.append("topology")
+
+        if self.geometry_var.get():
+            modes.append("geometry")
+
+        if self.quality_var.get():
+            modes.append("quality")
+
+        if self.performance_var.get():
+            modes.append("performance")
+
+        if not modes:
             messagebox.showwarning(
                 "No Analyzer Selected",
                 "Please select at least one analyzer."
@@ -166,15 +177,7 @@ class AnalyzeInterface(BaseScreen):
             return
 
         try:
-            runner = AnalyzerRunner(
-                file_path,
-                run_meta=self.meta_var.get(),
-                run_geometry=self.geometry_var.get(),
-                run_topology=self.topology_var.get(),
-                run_quality=self.quality_var.get(),
-                run_performance=self.performance_var.get()
-            )
-
+            runner = AnalyzerRunner(file_path, modes)
             report = runner.run()
 
             if report is None:
@@ -214,3 +217,31 @@ class AnalyzeInterface(BaseScreen):
 
         except Exception as e:
             messagebox.showerror("Display Error", str(e))
+
+    def reset(self):
+        try:
+            if hasattr(self, "selected_file"):
+                self.selected_file.set("")
+
+            if hasattr(self, "meta_var"):
+                self.meta_var.set(False)
+
+            if hasattr(self, "topology_var"):
+                self.topology_var.set(False)
+
+            if hasattr(self, "geometry_var"):
+                self.geometry_var.set(False)
+
+            if hasattr(self, "quality_var"):
+                self.quality_var.set(False)
+
+            if hasattr(self, "performance_var"):
+                self.performance_var.set(False)
+
+            if hasattr(self, "console"):
+                self.console.config(state="normal")
+                self.console.delete("1.0", tk.END)
+                self.console.config(state="disabled")
+
+        except Exception as e:
+            print(f"[AnalyzeInterface RESET ERROR] {e}")

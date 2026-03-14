@@ -19,12 +19,10 @@ class BaseInterface(tk.Tk):
         self.resizable(True, True)
         self.minsize(1024, 768)
 
-        # Styling
         self.style = ttk.Style()
         self.style.configure("TButton", font=("Segoe UI", 10), padding=5)
         self.style.configure("TLabel", font=("Segoe UI", 10))
 
-        # Main container
         container = ttk.Frame(self)
         container.grid(row=0, column=0, sticky="nsew")
 
@@ -37,9 +35,6 @@ class BaseInterface(tk.Tk):
         self.container = container
 
     def add_frame(self, name, frame_class):
-        """
-        Add a new screen to the application.
-        """
         try:
             frame = frame_class(self.container, self)
             self.frames[name] = frame
@@ -48,22 +43,15 @@ class BaseInterface(tk.Tk):
             print(f"[BaseInterface ERROR] Failed to add frame '{name}': {e}")
 
     def show_frame(self, name):
-        """
-        Display a registered screen.
-        """
         try:
-            frame = self.frames.get(name)
-            if frame:
-                frame.tkraise()
-            else:
-                print(f"[BaseInterface ERROR] Frame '{name}' not found.")
+            frame = self.frames[name]
+            if hasattr(frame, "reset"):
+                frame.reset()
+            frame.tkraise()
         except Exception as e:
             print(f"[BaseInterface ERROR] {e}")
 
     def exit_app(self):
-        """
-        Exit the application safely.
-        """
         try:
             self.destroy()
         except Exception as e:
