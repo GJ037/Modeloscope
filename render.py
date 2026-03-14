@@ -48,6 +48,7 @@ class RenderRunner:
                 return None
 
             self.engine.fit_camera()
+            self.engine.set_axis(False)
             
             return True
 
