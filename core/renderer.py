@@ -28,7 +28,7 @@ class ModelRenderer:
         try:
             self.canvas = scene.SceneCanvas(
                 keys="interactive",
-                bgcolor="black",
+                bgcolor="gray",
                 parent=parent
             )
 
@@ -56,7 +56,7 @@ class ModelRenderer:
         try:
             if self.axis is None:
                 self.axis = scene.visuals.XYZAxis(parent=self.view.scene)
-                self.axis.transform = scene.transforms.STTransform(scale=(0.5, 0.5, 0.5))
+                self.axis.transform = scene.transforms.STTransform(scale=(0.25, 0.25, 0.25))
 
             self.axis.visible = visible
 

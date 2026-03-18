@@ -17,9 +17,11 @@ class PointCloudRenderer:
             points.set_data(
                 model.vertices,
                 face_color="white",
-                symbol="disc",
-                size=3
+                edge_color=None,
+                size=2
             )
+
+            points.antialias = 0
 
             engine.add_visual(points)
             return True
