@@ -16,8 +16,8 @@ class StandardRenderer:
             mesh = scene.visuals.Mesh(
                 vertices=model.vertices,
                 faces=model.faces,
-                color=Color("#7da6ff"),
-                shading="smooth"
+                color=Color("white"),
+                shading="flat"
             )
 
             engine.add_visual(mesh)
