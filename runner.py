@@ -1,7 +1,7 @@
-from interface.base_interface import BaseInterface
-from interface.home_interface import HomeInterface
-from interface.analyze_interface import AnalyzeInterface
-from interface.render_interface import RenderInterface
+from interfaces.base import BaseInterface
+from interfaces.home import HomeInterface
+from interfaces.analyze import AnalyzeInterface
+from interfaces.render import RenderInterface
 
 
 def main():

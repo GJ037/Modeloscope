@@ -10,3 +10,6 @@ versions/
 
 # Test Models
 models/
+*.stl
+*.obj
+*.ply
