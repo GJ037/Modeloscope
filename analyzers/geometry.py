@@ -49,10 +49,7 @@ class GeometryAnalyzer(BaseAnalyzer):
                 "surface_area": round(surface_area, 5),
                 "volume": round(volume, 5),
 
-                "bbox_x": round(float(bbox[0]), 5),
-                "bbox_y": round(float(bbox[1]), 5),
-                "bbox_z": round(float(bbox[2]), 5),
-
+                "bounding_box": [round(float(x), 5) for x in bbox],
                 "center_mass": [round(float(x), 5) for x in center_mass],
                 "centroid": [round(float(x), 5) for x in centroid],
 

@@ -1,7 +1,7 @@
 import tkinter as tk, os
 from tkinter import ttk, filedialog, messagebox
 from interfaces.screen import BaseScreen
-from analyzers.analyze import AnalyzerRunner
+from analyzers.runner import AnalyzerRunner
 
 
 class AnalyzeInterface(BaseScreen):

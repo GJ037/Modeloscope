@@ -1,7 +1,7 @@
 import tkinter as tk, os
 from tkinter import ttk, filedialog, messagebox
 from interfaces.screen import BaseScreen
-from renderers.render import RenderRunner
+from renderers.runner import RenderRunner
 
 
 class RenderInterface(BaseScreen):
