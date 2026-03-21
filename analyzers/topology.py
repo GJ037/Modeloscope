@@ -8,7 +8,6 @@ class TopologyAnalyzer(BaseAnalyzer):
     Responsibilities:
     - Counts vertices, edges, and faces
     - Computes Euler characteristic for topology validation
-    - Determines number of disconnected components (body count)
 
     Describes how the mesh is connected internally, independent of
     its geometric shape.
@@ -24,8 +23,7 @@ class TopologyAnalyzer(BaseAnalyzer):
                 "vertex_count": int(len(model.vertices)),
                 "face_count": int(len(model.faces)),
                 "edge_count": int(len(model.edges_unique)),
-                "euler_number": int(model.euler_number),
-                "body_count": int(model.body_count)
+                "euler_number": int(model.euler_number)
             }
 
             return self.success(data)

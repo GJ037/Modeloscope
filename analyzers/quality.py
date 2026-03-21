@@ -11,7 +11,6 @@ class QualityAnalyzer(BaseAnalyzer):
     - Detects degenerate faces
     - Identifies duplicate vertices
     - Checks winding consistency and watertightness
-    - Evaluates convexity and volume validity
 
     Identifies structural issues and numerical inconsistencies
     within the mesh.
@@ -43,10 +42,7 @@ class QualityAnalyzer(BaseAnalyzer):
                 "duplicate_vertices": duplicate_vertices,
 
                 "winding_consistent": bool(model.is_winding_consistent),
-                "watertight": bool(model.is_watertight),
-
-                "is_convex": bool(model.is_convex),
-                "is_volume": bool(model.is_volume),
+                "watertight": bool(model.is_watertight)
             }
 
             return self.success(data)
