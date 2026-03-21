@@ -1,14 +1,18 @@
 from tkinter import ttk
 
+
 class BaseScreen(ttk.Frame):
     """
-    BaseScreen
+    Abstract base class for all UI screens.
 
-    Standard layout template for all UI screens.
-    Provides:
-        - Header
-        - Expandable content area
-        - Footer section
+    Responsibilities:
+    - Provides a common layout structure (header, content, footer)
+    - Standardizes screen initialization and styling
+    - Offers reusable UI components such as footer buttons
+    - Defines a reset() method for clearing screen state
+
+    Ensures consistency, reusability, and maintainability across all
+    interface screens.
     """
 
     def __init__(self, parent, controller, title=""):
@@ -19,14 +23,15 @@ class BaseScreen(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
-        self.header = ttk.Frame(self)
-        self.header.grid(row=0, column=0, sticky="ew")
+        if title:
+            self.header = ttk.Frame(self)
+            self.header.grid(row=0, column=0, sticky="ew")
 
-        ttk.Label(
-            self.header,
-            text=title,
-            font=("Segoe UI", 28, "bold")
-        ).pack(pady=(50, 30))
+            ttk.Label(
+                self.header,
+                text=title,
+                font=("Segoe UI", 28, "bold")
+            ).pack(pady=(50, 30))
 
         self.content = ttk.Frame(self)
         self.content.grid(row=1, column=0, sticky="nsew")

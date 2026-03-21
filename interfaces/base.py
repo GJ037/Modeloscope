@@ -1,17 +1,23 @@
 import tkinter as tk
 from tkinter import ttk
 
+
 class BaseInterface(tk.Tk):
     """
-    BaseInterface
+    Main application controller responsible for managing all UI screens.
 
-    Main application window responsible for:
-        - Managing screen navigation
-        - Holding all frames
-        - Providing global styling
+    Responsibilities:
+    - Initializes the root application window
+    - Registers and stores all interface screens (frames)
+    - Handles navigation between screens
+    - Ensures proper lifecycle handling (reset before display)
+    - Acts as the central coordinator for UI flow
+
+    Provides a unified structure for screen management and navigation
+    across the entire application.
     """
 
-    def __init__(self, title="Modeloscope", size="1024x768"):
+    def __init__(self, title="Modeloscope_v2.2", size="1024x768"):
         super().__init__()
 
         self.title(title)
@@ -48,6 +54,8 @@ class BaseInterface(tk.Tk):
             if hasattr(frame, "reset"):
                 frame.reset()
             frame.tkraise()
+            self.update_idletasks()
+            
         except Exception as e:
             print(f"[BaseInterface ERROR] {e}")
 
