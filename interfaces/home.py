@@ -42,7 +42,7 @@ class HomeInterface(BaseScreen):
                 self.content,
                 text="🧪 Inspect Model",
                 width=30,
-                state="disabled"
+                command=lambda: self.controller.show_frame("InspectInterface")
             ).pack(pady=15)
 
             self.add_footer_button(
