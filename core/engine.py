@@ -23,6 +23,7 @@ class RenderEngine:
         self.view = None
         self.axis = None
         self.visuals = []
+        self.overlay = None
 
     def initialize(self, parent):
         if parent is None:
@@ -40,6 +41,7 @@ class RenderEngine:
         self.view.camera = scene.cameras.TurntableCamera()
 
         self._init_axis()
+        self._init_overlay()
         self.set_axis(True)
         
     def _init_axis(self):
@@ -55,6 +57,13 @@ class RenderEngine:
     def add_visual(self, visual):
         visual.parent = self.view.scene
         self.visuals.append(visual)
+
+    def _init_overlay(self):
+        self.overlay = scene.Node(parent=self.view.scene)
+
+    def clear_overlay(self):
+        for child in list(self.overlay.children):
+            child.parent = None
 
     def fit_camera(self):
         if self.view:

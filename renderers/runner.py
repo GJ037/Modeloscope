@@ -41,6 +41,7 @@ class RenderRunner:
             return result
 
         model = result["model"]
+        self.model = model
 
         self.reset_scene()
 
@@ -48,7 +49,7 @@ class RenderRunner:
 
         if not renderer_class:
             return {"status": "error", "message": f"Unknown mode: {mode}"}
-
+        
         renderer = renderer_class()
         render_result = renderer.render(self.engine, model)
 
