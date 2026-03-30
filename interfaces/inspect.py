@@ -111,7 +111,6 @@ class InspectInterface(BaseScreen):
         
         if self.inspect_runner:
             self.inspect_runner.reset_scene()
-            self.mode.set("")
 
             self.has_render = False
             self.has_overlay = False

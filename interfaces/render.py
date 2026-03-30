@@ -53,7 +53,7 @@ class RenderInterface(BaseScreen):
             ttk.Button(button_frame, text="🎨 Render Model", width=15, command=self.render_model)\
                 .pack(side="left", padx=20)
 
-            ttk.Button(button_frame, text="🧹 Clear Render", width=15, command=self.clear_view)\
+            ttk.Button(button_frame, text="🧹 Clear View", width=15, command=self.clear_view)\
                 .pack(side="left", padx=20)
 
             self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
@@ -108,7 +108,6 @@ class RenderInterface(BaseScreen):
         
         if self.runner:
             self.runner.reset_scene()
-            self.render_mode.set("")
 
         self.has_render = False
 
