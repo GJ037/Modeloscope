@@ -1,12 +1,14 @@
 class BaseInspector:
     """
-    Base class for all inspectors.
+    Abstract base class for all inspection modules.
+
+    Responsibilities:
+    - Defines the contract for all inspectors
+    - Ensures consistent input/output structure across implementations
+
+    Provides a standardized interface for implementing inspection logic
+    while keeping individual inspectors modular and interchangeable.
     """
 
     def inspect(self, model):
-        """
-        Takes model → returns structured inspection data.
-
-        Must be implemented by subclasses.
-        """
-        raise NotImplementedError("Inspector must implement inspect()")
+        raise NotImplementedError("Inspector method must be implemented")
