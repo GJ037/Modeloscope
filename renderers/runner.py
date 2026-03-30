@@ -41,7 +41,6 @@ class RenderRunner:
             return result
 
         model = result["model"]
-        self.model = model
 
         self.reset_scene()
 

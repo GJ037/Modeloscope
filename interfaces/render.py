@@ -108,6 +108,7 @@ class RenderInterface(BaseScreen):
         
         if self.runner:
             self.runner.reset_scene()
+            self.render_mode.set("")
 
         self.has_render = False
 
