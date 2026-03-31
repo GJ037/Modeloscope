@@ -38,7 +38,7 @@ class InspectRunner:
 
         self.model = None
 
-    def inspect(self, file_path, mode):
+    def inspect(self, file_path, mode, context=None):
 
         if not file_path:
             return {"status": "error", "message": "Invalid file path"}
@@ -49,7 +49,11 @@ class InspectRunner:
         if result["status"] != "success":
             return result
 
-        model = result["model"]
+        data = result["data"]
+        model = data["model"]
+        meta = data["meta"]
+        context = {}
+
         self.model = model
 
         self.reset_scene()
@@ -66,7 +70,7 @@ class InspectRunner:
             return {"status": "error", "message": f"Unknown mode: {mode}"}
 
         inspector = inspector_class()
-        inspect_result = inspector.inspect(model)
+        inspect_result = inspector.inspect(model, context)
 
         if inspect_result["status"] != "success":
             return inspect_result
@@ -79,7 +83,7 @@ class InspectRunner:
 
         return {
             "status": "success",
-            "type": inspect_result["type"]
+            "data": inspect_result["data"]
         }
 
     def reset_scene(self):

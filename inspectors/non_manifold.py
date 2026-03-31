@@ -14,9 +14,9 @@ class NonManifoldInspector(BaseInspector):
     rendering, or manufacturing pipelines.
     """
 
-    def inspect(self, model):
+    def inspect(self, model, context=None):
         if model is None:
-            raise ValueError("[NonManifoldInspector] Model is None")
+            return self.error("Model is None")
 
         try:
             edge_count = defaultdict(int)
@@ -37,14 +37,15 @@ class NonManifoldInspector(BaseInspector):
             non_manifold_edges = [
                 edge for edge, count in edge_count.items() if count > 2
             ]
-
-            return {
-                "status": "success",
+        
+            data = {
                 "type": "non_manifold_edges",
-                "data": {
+                "payload": {
                     "edges": non_manifold_edges
                 }
             }
-        
+
+            return self.success(data)
+
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return self.error(str(e))

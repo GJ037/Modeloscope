@@ -1,14 +1,18 @@
-class BaseInspector:
+from core.base import BaseModule
+
+
+class BaseInspector(BaseModule):
     """
-    Abstract base class for all inspection modules.
+    BaseInspector defines the standard contract for all inspection modules.
 
     Responsibilities:
-    - Defines the contract for all inspectors
-    - Ensures consistent input/output structure across implementations
+    - Enforces the inspect(model, context) interface
+    - Detects structural or geometric issues in models
+    - Produces structured inspection outputs (type + payload)
 
-    Provides a standardized interface for implementing inspection logic
-    while keeping individual inspectors modular and interchangeable.
+    Acts as the foundation for all inspectors, ensuring consistent
+    inspection behavior and seamless integration with visualization layers.
     """
-
-    def inspect(self, model):
+    
+    def inspect(self, model, context=None):
         raise NotImplementedError("Inspector method must be implemented")

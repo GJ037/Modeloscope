@@ -70,12 +70,15 @@ class ModelLoader:
 
             return {
                 "status": "success",
-                "model": model,
-                "meta": meta
+                "data": {
+                    "model": model,
+                    "meta": meta
+                }
             }
 
         except Exception as e:
             return {
                 "status": "error",
-                "message": str(e)
+                "message": str(e),
+                "data": {}
             }

@@ -14,9 +14,9 @@ class FlippedNormalsInspector(BaseInspector):
     geometric inconsistencies.
     """
 
-    def inspect(self, model):
+    def inspect(self, model, context=None):
         if model is None:
-            raise ValueError("[FlippedNormalsInspector] Model is None")
+            return self.error("Model is None")
 
         try:
             vertices = model.vertices
@@ -52,14 +52,16 @@ class FlippedNormalsInspector(BaseInspector):
                 if np.dot(normal, direction) < 0:
                     flipped_centers.append(center)
                     flipped_normals.append(normal)
-
-            return {
-                "status": "success",
+        
+            data = {
                 "type": "flipped_normals",
-                "data": {
+                "payload": {
                     "centers": flipped_centers,
                     "normals": flipped_normals
                 }
             }
+
+            return self.success(data)
+
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return self.error(str(e))

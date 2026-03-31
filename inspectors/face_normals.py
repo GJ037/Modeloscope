@@ -14,16 +14,16 @@ class FaceNormalsInspector(BaseInspector):
     geometric inconsistencies.
     """
 
-    def inspect(self, model):
+    def inspect(self, model, context=None):
         if model is None:
-            raise ValueError("[FaceNormalsInspector] Model is None")
+            return self.error("Model is None")
 
         try:
             vertices = model.vertices
             faces = model.faces
 
-            centers = []
-            normals = []
+            face_centers = []
+            face_normals = []
 
             for face in faces:
                 v0, v1, v2 = face
@@ -45,17 +45,18 @@ class FaceNormalsInspector(BaseInspector):
 
                 center = (p0 + p1 + p2) / 3
 
-                centers.append(center)
-                normals.append(normal)
-            
-            return {
-                "status": "success",
+                face_centers.append(center)
+                face_normals.append(normal)
+
+            data = {
                 "type": "face_normals",
-                "data": {
-                    "centers": centers,
-                    "normals": normals
+                "payload": {
+                    "centers": face_centers,
+                    "normals": face_normals
                 }
             }
-        
+
+            return self.success(data)
+
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return self.error(str(e))

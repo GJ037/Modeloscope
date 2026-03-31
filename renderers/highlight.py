@@ -15,145 +15,138 @@ class HighlightRenderer:
     separating analysis logic from rendering logic.
     """
 
-    def render(self, engine, model, inspect_data):
+    def render(self, engine, model, inspect_data, context=None):
         if model is None:
-            raise ValueError("[HighlightRenderer] Model is None")
-
-        if not inspect_data or inspect_data.get("status") != "success":
+            print("[HighlightRenderer ERROR] Model is None")
             return
 
-        data_type = inspect_data.get("type")
-        data = inspect_data.get("data", {})
+        try:
+            data = inspect_data.get("data", {})
 
-        if not data_type:
-            print("[HighlightRenderer ERROR] Missing type in inspect_data")
-            return
+            data_type = data.get("type")
+            payload = data.get("payload", {})
 
-        if data_type == "boundary_edges":
-            self.render_boundary_edges(engine, model, data)
+            RENDER_MAP = {
+                "boundary_edges": self.render_boundary_edges,
+                "non_manifold_edges": self.render_non_manifold_edges,
+                "face_normals": self.render_face_normals,
+                "vertex_normals": self.render_vertex_normals,
+                "flipped_normals": self.render_flipped_normals,
+            }
 
-        elif data_type == "non_manifold_edges":
-            self.render_non_manifold_edges(engine, model, data)
+            handler = RENDER_MAP.get(data_type)
+            handler(engine, model, payload)
 
-        elif data_type == "face_normals":
-            self.render_face_normals(engine, model, data)
-
-        elif data_type == "vertex_normals":
-            self.render_vertex_normals(engine, model, data)
-
-        elif data_type == "flipped_normals":
-            self.render_flipped_normals(engine, model, data)
+        except Exception as e:
+            return self.error(str(e))
 
     def render_boundary_edges(self, engine, model, data):
-        edges = data.get("edges", [])
+        try:
+            edges = data.get("edges", [])
+            vertices = model.vertices
+            lines = []
 
-        if not edges:
-            return
+            for v1, v2 in edges:
+                lines.append(vertices[v1])
+                lines.append(vertices[v2])
 
-        vertices = model.vertices
-        lines = []
+            scene.visuals.Line(
+                pos=lines,
+                color=Color("red"),
+                width=2,
+                method='gl',
+                parent=engine.overlay
+            )
 
-        for v1, v2 in edges:
-            lines.append(vertices[v1])
-            lines.append(vertices[v2])
-
-        scene.visuals.Line(
-            pos=lines,
-            color=Color("red"),
-            width=2,
-            method='gl',
-            parent=engine.overlay
-        )
+        except Exception as e:
+            return self.error(str(e))
 
     def render_non_manifold_edges(self, engine, model, data):
-        edges = data.get("edges", [])
+        try:
+            edges = data.get("edges", [])
+            vertices = model.vertices
+            lines = []
 
-        if not edges:
-            return
+            for v1, v2 in edges:
+                lines.append(vertices[v1])
+                lines.append(vertices[v2])
 
-        vertices = model.vertices
-        lines = []
+            scene.visuals.Line(
+                pos=lines,
+                color=Color("yellow"),
+                width=3,
+                method='gl',
+                parent=engine.overlay
+            )
 
-        for v1, v2 in edges:
-            lines.append(vertices[v1])
-            lines.append(vertices[v2])
-
-        scene.visuals.Line(
-            pos=lines,
-            color=Color("yellow"),
-            width=3,
-            method='gl',
-            parent=engine.overlay
-        )
+        except Exception as e:
+            return self.error(str(e))
 
     def render_face_normals(self, engine, model, data):
-        centers = data.get("centers", [])
-        normals = data.get("normals", [])
+        try:
+            centers = data.get("centers", [])
+            normals = data.get("normals", [])
 
-        if not centers:
-            return
+            lines = []
+            scale = 0.02
 
-        lines = []
-        scale = 0.025
+            for c, n in zip(centers, normals):
+                lines.append(c)
+                lines.append(c + n * scale)
 
-        for c, n in zip(centers, normals):
-            start = c
-            end = c + n * scale
-            lines.append(start)
-            lines.append(end)
+            scene.visuals.Line(
+                pos=lines,
+                color="blue",
+                width=1,
+                method='gl',
+                parent=engine.overlay
+            )
 
-        scene.visuals.Line(
-            pos=lines,
-            color="blue",
-            width=1,
-            method='gl',
-            parent=engine.overlay
-        )
+        except Exception as e:
+            return self.error(str(e))
 
     def render_vertex_normals(self, engine, model, data):
-        vertices = data.get("vertices", [])
-        normals = data.get("normals", [])
+        try:
+            vertices = data.get("vertices", [])
+            normals = data.get("normals", [])
 
-        if not vertices:
-            return
+            lines = []
+            scale = 0.02
 
-        lines = []
-        scale = 0.025
+            for v, n in zip(vertices, normals):
+                lines.append(v)
+                lines.append(v + n * scale)
 
-        for v, n in zip(vertices, normals):
-            start = v
-            end = v + n * scale
-            lines.append(start)
-            lines.append(end)
+            scene.visuals.Line(
+                pos=lines,
+                color="green",
+                width=1,
+                method='gl',
+                parent=engine.overlay
+            )
 
-        scene.visuals.Line(
-            pos=lines,
-            color="green",
-            width=1,
-            method='gl',
-            parent=engine.overlay
-        )
+        except Exception as e:
+            return self.error(str(e))
 
     def render_flipped_normals(self, engine, model, data):
-        centers = data.get("centers", [])
-        normals = data.get("normals", [])
+        try:
+            centers = data.get("centers", [])
+            normals = data.get("normals", [])
 
-        if not centers:
-            return
+            lines = []
+            scale = 0.02
 
-        lines = []
-        scale = 0.025
+            for c, n in zip(centers, normals):
+                lines.append(c)
+                lines.append(c + n * scale)
 
-        for c, n in zip(centers, normals):
-            start = c
-            end = c + n * scale
-            lines.append(start)
-            lines.append(end)
-
-        scene.visuals.Line(
-            pos=lines,
-            color="magenta",
-            width=2,
-            method='gl',
-            parent=engine.overlay
-        )
+            scene.visuals.Line(
+                pos=lines,
+                color="magenta",
+                width=2,
+                method='gl',
+                parent=engine.overlay
+            )
+            
+        except Exception as e:
+            return self.error(str(e))
