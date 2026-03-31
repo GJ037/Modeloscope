@@ -25,8 +25,8 @@ class RenderInterface(BaseScreen):
         self.selected_file = tk.StringVar()
         self.render_mode = tk.StringVar()
         self.runner = None
-        self.build_content()
         self.has_render = False
+        self.build_content()
 
     def build_content(self):
         try:
@@ -88,9 +88,6 @@ class RenderInterface(BaseScreen):
             return
 
         try:
-            if not self.runner:
-                self.runner = RenderRunner(self.viewer_frame)
-
             result = self.runner.render(file_path, self.render_mode.get())
 
             if result["status"] != "success":

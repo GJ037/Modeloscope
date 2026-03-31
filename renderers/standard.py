@@ -30,11 +30,7 @@ class StandardRenderer(BaseRenderer):
 
             engine.add_visual(mesh)
 
-            data = {
-                "rendered": True
-            }
-
-            return self.success(data)
+            return self.success()
 
         except Exception as e:
             return self.error(str(e))
