@@ -30,10 +30,7 @@ class WireframeRenderer(BaseRenderer):
 
             engine.add_visual(lines)
 
-            data = {
-                "rendererd": True
-            }
-            return self.success(data)
+            return self.success()
 
         except Exception as e:
             return self.error(str(e))

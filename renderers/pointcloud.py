@@ -33,11 +33,7 @@ class PointCloudRenderer(BaseRenderer):
 
             engine.add_visual(points)
 
-            data = {
-                "rendered": True
-            }
-
-            return self.success(data)
+            return self.success()
 
         except Exception as e:
             return self.error(str(e))

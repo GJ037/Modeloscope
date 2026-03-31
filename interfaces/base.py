@@ -17,7 +17,7 @@ class BaseInterface(tk.Tk):
     across the entire application.
     """
 
-    def __init__(self, title="Modeloscope_v3", size="1024x768"):
+    def __init__(self, title="Modeloscope_v3.1", size="1024x768"):
         super().__init__()
 
         self.title(title)
