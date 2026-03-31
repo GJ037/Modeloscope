@@ -105,8 +105,8 @@ class InspectInterface(BaseScreen):
             messagebox.showerror("Inspect Error", str(e))
 
     def clear_view(self):
-        if not self.has_render and self.has_overlay:
-            messagebox.showwarning("Nothing to Clear", "No inspection available.")
+        if not self.has_render and not self.has_overlay:
+            messagebox.showwarning("Nothing to Clear", "No rendered model available.")
             return
         
         if self.inspect_runner:
