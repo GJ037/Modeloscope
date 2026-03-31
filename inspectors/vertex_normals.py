@@ -15,15 +15,18 @@ class VertexNormalsInspector(BaseInspector):
     lighting, rendering, and simulation.
     """
 
-    def inspect(self, model):
+    def inspect(self, model, context=None):
         if model is None:
-            raise ValueError("[VertexNormalsInspector] Model is None")
+            return self.error("Model is None")
 
         try:
             vertices = model.vertices
             faces = model.faces
 
             vertex_normals = defaultdict(lambda: np.zeros(3))
+
+            final_normals = []
+            final_vertices = []
 
             for face in faces:
                 v0, v1, v2 = face
@@ -47,8 +50,6 @@ class VertexNormalsInspector(BaseInspector):
                 vertex_normals[v1] += normal
                 vertex_normals[v2] += normal
 
-            final_normals = []
-            final_vertices = []
 
             for vid, normal in vertex_normals.items():
                 normalize = np.linalg.norm(normal)
@@ -59,14 +60,16 @@ class VertexNormalsInspector(BaseInspector):
 
                 final_vertices.append(vertices[vid])
                 final_normals.append(normal)
-
-            return {
-                "status": "success",
+        
+            data = {
                 "type": "vertex_normals",
-                "data": {
+                "payload": {
                     "vertices": final_vertices,
                     "normals": final_normals
                 }
             }
+
+            return self.success(data)
+
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return self.error(str(e))

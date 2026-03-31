@@ -16,9 +16,9 @@ class StandardRenderer(BaseRenderer):
     surface geometry.
     """
     
-    def render(self, engine, model):
+    def render(self, engine, model, context=None):
         if model is None:
-            return {"status": "error", "message": "Model is None"}
+            return self.error("Model is None")
 
         try:
             mesh = scene.visuals.Mesh(
@@ -30,7 +30,11 @@ class StandardRenderer(BaseRenderer):
 
             engine.add_visual(mesh)
 
-            return {"status": "success"}
+            data = {
+                "rendered": True
+            }
+
+            return self.success(data)
 
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return self.error(str(e))

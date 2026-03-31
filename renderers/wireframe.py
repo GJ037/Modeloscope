@@ -14,9 +14,9 @@ class WireframeRenderer(BaseRenderer):
     Highlights the structural connectivity and topology of the mesh.
     """
     
-    def render(self, engine, model):
+    def render(self, engine, model, context=None):
         if model is None:
-            return {"status": "error", "message": "Model is None"}
+            return self.error("Model is None")
 
         try:
             edges = model.edges_unique
@@ -30,7 +30,10 @@ class WireframeRenderer(BaseRenderer):
 
             engine.add_visual(lines)
 
-            return {"status": "success"}
+            data = {
+                "rendererd": True
+            }
+            return self.success(data)
 
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return self.error(str(e))

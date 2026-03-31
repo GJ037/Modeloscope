@@ -30,7 +30,7 @@ class RenderRunner:
         self.engine = RenderEngine()
         self.engine.initialize(parent)
 
-    def render(self, file_path, mode):
+    def render(self, file_path, mode, context=None):
         if not file_path:
             return {"status": "error", "message": "Invalid file path"}
 
@@ -40,7 +40,10 @@ class RenderRunner:
         if result["status"] != "success":
             return result
 
-        model = result["model"]
+        data = result["data"]
+        model = data["model"]
+        meta = data["meta"]
+        context = {}
 
         self.reset_scene()
 
@@ -50,7 +53,7 @@ class RenderRunner:
             return {"status": "error", "message": f"Unknown mode: {mode}"}
         
         renderer = renderer_class()
-        render_result = renderer.render(self.engine, model)
+        render_result = renderer.render(self.engine, model, context)
 
         if render_result["status"] != "success":
             return render_result
@@ -58,7 +61,12 @@ class RenderRunner:
         self.engine.fit_camera()
         self.engine.set_axis(False)
 
-        return {"status": "success"}
+        return {
+            "status": "success",
+            "data": {
+                "mode": mode
+            }
+        }
     
     def reset_scene(self):
         if self.engine:

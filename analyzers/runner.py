@@ -36,17 +36,17 @@ class AnalyzerRunner:
         if result["status"] != "success":
             return result
 
-        model = result["model"]
-        meta = result["meta"]
+        data = result["data"]
+        model = data["model"]
+        meta = data["meta"]
 
         report = {}
-
-        if "meta" in modes:
-            report["meta"] = meta
-
         context = {
             "load_time": meta["load_time"]
         }
+
+        if "meta" in modes:
+            report["meta"] = meta
 
         for mode in modes:
             if mode in ANALYZERS:
@@ -55,5 +55,5 @@ class AnalyzerRunner:
 
         return {
             "status": "success",
-            "report": report
+            "data": report
         }

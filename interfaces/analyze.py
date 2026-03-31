@@ -123,8 +123,8 @@ class AnalyzeInterface(BaseScreen):
                 messagebox.showerror("Analysis Error", result["message"])
                 return
 
-            self.display_report(result["report"])
-            self.last_report = result["report"]
+            self.display_report(result["data"])
+            self.last_report = result["data"]
             self.has_report = True
 
         except Exception as e:

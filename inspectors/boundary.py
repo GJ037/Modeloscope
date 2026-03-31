@@ -14,9 +14,9 @@ class BoundaryInspector(BaseInspector):
     to missing faces or non-closed surfaces.
     """
 
-    def inspect(self, model):
+    def inspect(self, model, context=None):
         if model is None:
-            raise ValueError("[BoundaryInspector] Model is None")
+            return self.error("Model is None")
 
         try:
             edge_count = defaultdict(int)
@@ -38,13 +38,14 @@ class BoundaryInspector(BaseInspector):
                 edge for edge, count in edge_count.items() if count == 1
             ]
 
-            return {
-                "status": "success",
+            data = {
                 "type": "boundary_edges",
-                "data": {
+                "payload": {
                     "edges": boundary_edges
                 }
             }
 
+            return self.success(data)
+
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return self.error(str(e))

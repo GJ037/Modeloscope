@@ -1,28 +1,18 @@
-class BaseAnalyzer:
+from core.base import BaseModule
+
+
+class BaseAnalyzer(BaseModule):
     """
-    Defines the standard contract for all analyzers in the system.
+    BaseAnalyzer defines the standard contract for all analysis modules.
 
     Responsibilities:
-    - Enforces a consistent analyze(model, context) interface
-    - Provides standardized success and error response formats
-    - Ensures uniform behavior across all analyzer implementations
+    - Enforces the analyze(model, context) interface
+    - Processes models to extract metrics and insights
+    - Returns structured analysis results using BaseModule utilities
 
-    This serves as the foundation for building scalable and maintainable
-    analysis modules.
+    Acts as the foundation for all analyzers, ensuring consistent
+    behavior, output format, and integration within the analysis pipeline.
     """
-
+    
     def analyze(self, model, context=None):
         raise NotImplementedError("Analyzer must implement analyze()")
-
-    def success(self, data: dict):
-        return {
-            "status": "success",
-            "data": data
-        }
-
-    def error(self, message: str):
-        return {
-            "status": "error",
-            "message": message,
-            "data": {}
-        }
