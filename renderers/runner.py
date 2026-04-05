@@ -1,84 +1,35 @@
-from core.loader import ModelLoader
-from core.engine import RenderEngine
-from renderers.standard import StandardRenderer
+from cores.loader import ModelLoader
+from renderers.flat import FlatRenderer
+from renderers.shaded import ShadedRenderer
 from renderers.wireframe import WireframeRenderer
 from renderers.pointcloud import PointCloudRenderer
 
-
 RENDERERS = {
-    "standard": StandardRenderer,
+    "flat": FlatRenderer,
+    "shaded": ShadedRenderer,
     "wireframe": WireframeRenderer,
     "pointcloud": PointCloudRenderer
 }
 
 
 class RenderRunner:
-    """
-    Orchestrates the rendering pipeline.
 
-    Responsibilities:
-    - Loads the model using ModelLoader
-    - Selects the appropriate renderer based on mode
-    - Controls the rendering sequence (clear → render → adjust camera)
-    - Coordinates interaction between engine and renderers
+    def __init__(self, engine):
+        self.engine = engine
 
-    Acts as the execution layer that connects model data with
-    rendering logic in a controlled and predictable flow.
-    """
-
-    def __init__(self, parent):
-        self.engine = RenderEngine()
-        self.engine.initialize(parent)
-
-    def render(self, file_path, mode, context=None):
+    def run(self, file_path, mode):
         if not file_path:
-            return {"status": "error", "message": "Invalid file path"}
+            raise ValueError("Invalid file path")
 
-        loader = ModelLoader()
-        result = loader.load(file_path)
-
-        if result["status"] != "success":
-            return result
-
-        data = result["data"]
-        model = data["model"]
-        meta = data["meta"]
-        context = {}
-
-        self.reset_scene()
+        model, meta = ModelLoader().load(file_path)
+        self.engine.clear_all()
 
         renderer_class = RENDERERS.get(mode)
-
         if not renderer_class:
-            return {"status": "error", "message": f"Unknown mode: {mode}"}
-        
+            raise ValueError(f"Unknown render mode: {mode}")
+
         renderer = renderer_class()
-        render_result = renderer.render(self.engine, model, context)
+        renderer.render(self.engine, model)
 
-        if render_result["status"] != "success":
-            return render_result
-
-        self.engine.fit_camera()
+        self.engine.reset_view()
         self.engine.set_axis(False)
-
-        return {
-            "status": "success",
-            "data": {
-                "mode": mode
-            }
-        }
-    
-    def reset_scene(self):
-        if self.engine:
-            self.engine.clear_scene()
-            self.engine.set_axis(True)
-
-            self.engine.reset_camera()
-            self.engine.fit_axis()
-
-    def reset_view(self):
-        if self.engine:
-            self.engine.set_axis(True)
-
-            self.engine.reset_camera()
-            self.engine.fit_axis()

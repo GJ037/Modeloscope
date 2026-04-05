@@ -1,9 +1,8 @@
-from core.loader import ModelLoader
+from cores.loader import ModelLoader
 from analyzers.geometry import GeometryAnalyzer
 from analyzers.topology import TopologyAnalyzer
 from analyzers.quality import QualityAnalyzer
 from analyzers.performance import PerformanceAnalyzer
-
 
 ANALYZERS = {
     "geometry": GeometryAnalyzer,
@@ -14,31 +13,13 @@ ANALYZERS = {
 
 
 class AnalyzerRunner:
-    """
-    Orchestrates the complete analysis pipeline.
 
-    Responsibilities:
-    - Loads model using ModelLoader
-    - Executes selected analyzers based on requested modes
-    - Passes shared context (e.g., load time) to analyzers
-    - Aggregates results into a structured report
-
-    Acts as the central controller coordinating all analysis operations.
-    """
-
-    def analyze(self, file_path, modes):
+    def run(self, file_path, modes):
         if not file_path:
-            return {"status": "error", "message": "Invalid file path"}
-        
+            raise ValueError("Invalid file path")
+
         loader = ModelLoader()
-        result = loader.load(file_path)
-
-        if result["status"] != "success":
-            return result
-
-        data = result["data"]
-        model = data["model"]
-        meta = data["meta"]
+        model, meta = loader.load(file_path)
 
         report = {}
         context = {
@@ -53,7 +34,4 @@ class AnalyzerRunner:
                 analyzer = ANALYZERS[mode]()
                 report[mode] = analyzer.analyze(model, context)
 
-        return {
-            "status": "success",
-            "data": report
-        }
+        return report
