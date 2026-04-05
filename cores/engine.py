@@ -25,7 +25,7 @@ class RenderEngine:
         self.canvas.native.pack(fill="both", expand=True)
 
         self.view = self.canvas.central_widget.add_view()
-        self.view.camera = scene.cameras.TurntableCamera()
+        self.view.camera = scene.cameras.ArcballCamera()
 
         self.axis = scene.visuals.XYZAxis(parent=self.view.scene)
         self.axis.transform = scene.transforms.STTransform(scale=(0.25, 0.25, 0.25))
@@ -66,7 +66,7 @@ class RenderEngine:
 
     def reset_camera(self):
         if self.view and self.view.camera:
-            self.view.camera = scene.cameras.TurntableCamera()
+            self.view.camera = scene.cameras.ArcballCamera()
 
     def reset_view(self):
         self.reset_camera()
