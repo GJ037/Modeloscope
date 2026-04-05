@@ -1,51 +1,32 @@
+import numpy as np
 from collections import defaultdict
-from .base import BaseInspector
 
 
-class NonManifoldInspector(BaseInspector):
-    """
-    Detects non-manifold edges in a mesh.
+class NonManifoldInspector:
 
-    Responsibilities:
-    - Identifies edges shared by more than two faces
-    - Highlights invalid topology configurations
-
-    Used to detect mesh errors that can cause issues in simulation,
-    rendering, or manufacturing pipelines.
-    """
-
-    def inspect(self, model, context=None):
+    def inspect(self, model):
         if model is None:
-            return self.error("Model is None")
+            raise ValueError("Model is None")
 
-        try:
-            edge_count = defaultdict(int)
-            faces = model.faces
+        faces = model.faces
+        vertex_count = len(model.vertices)
 
-            for face in faces:
-                v0, v1, v2 = face
+        edge_count = defaultdict(int)
 
-                edges = [
-                    tuple(sorted((v0, v1))),
-                    tuple(sorted((v1, v2))),
-                    tuple(sorted((v2, v0)))
-                ]
-
-                for edge in edges:
-                    edge_count[edge] += 1
-
-            non_manifold_edges = [
-                edge for edge, count in edge_count.items() if count > 2
+        for v0, v1, v2 in faces:
+            edges = [
+                tuple(sorted((v0, v1))),
+                tuple(sorted((v1, v2))),
+                tuple(sorted((v2, v0)))
             ]
-        
-            data = {
-                "type": "non_manifold_edges",
-                "payload": {
-                    "edges": non_manifold_edges
-                }
-            }
+            for e in edges:
+                edge_count[e] += 1
 
-            return self.success(data)
+        values = np.zeros(vertex_count)
 
-        except Exception as e:
-            return self.error(str(e))
+        for (v0, v1), count in edge_count.items():
+            if count > 2:
+                values[v0] += count
+                values[v1] += count
+
+        return values

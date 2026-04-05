@@ -1,87 +1,101 @@
-import tkinter as tk, os
+import os, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+from cores.engine import RenderEngine
 from interfaces.screen import BaseScreen
 from inspectors.runner import InspectRunner
 
 
 class InspectInterface(BaseScreen):
-    """
-    User interface for performing visual inspection on 3D models.
-
-    Responsibilities:
-    - Allows users to select a model file
-    - Provides options to choose different inspection modes
-    - Executes inspection through InspectRunner
-    - Displays rendered model along with inspection overlays
-    - Supports clearing overlay and resetting the viewport
-    - Maintains UI state for rendered model and overlay availability
-
-    Acts as the interaction layer between the user and the inspection
-    pipeline, ensuring a clear separation between UI logic and
-    inspection execution while providing real-time visual feedback.
-    """
 
     def __init__(self, parent, controller):
         super().__init__(parent, controller, title=None)
-        self.selected_file = tk.StringVar()
         self.mode = tk.StringVar()
-        self.inspect_runner = None
+        self.current_file = None
+        self.engine = None
+        self.runner = None
         self.has_render = False
         self.has_overlay = False
         self.build_content()
 
+        if self.engine is None:
+            self.engine = RenderEngine()
+            self.engine.initialize(self.viewer_frame)
+            self.runner = InspectRunner(self.engine)
+
     def build_content(self):
-        try:
-            self.content.columnconfigure(0, weight=1)
-            self.content.rowconfigure(3, weight=1)
+        self.content.columnconfigure(0, weight=1)
+        self.content.rowconfigure(2, weight=1)
 
-            file_frame = ttk.Frame(self.content)
-            file_frame.grid(row=0, column=0, pady=10)
+        button_frame = ttk.Frame(self.content)
+        button_frame.grid(row=0, column=0, pady=15)
 
-            ttk.Label(file_frame, text="Select Model:").pack(side="left", padx=5)
-            ttk.Entry(file_frame, textvariable=self.selected_file, width=50).pack(side="left", padx=5)
-            ttk.Button(file_frame, text="📁 Browse", width=10, command=self.browse_file).pack(side="left", padx=5)
+        ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)\
+            .pack(side="left", padx=20)
 
-            mode_frame = ttk.LabelFrame(self.content, text="Select Inspect Mode")
-            mode_frame.grid(row=1, column=0, pady=10)
+        ttk.Button(button_frame, text="🧪 Inspect Model", width=15, command=self.inspect_model)\
+            .pack(side="left", padx=20)
 
-            ttk.Radiobutton(mode_frame, text="Boundary Edges", variable=self.mode, value="boundary").grid(row=0, column=0, padx=15)
-            ttk.Radiobutton(mode_frame, text="Non-Manifold Edges", variable=self.mode, value="non_manifold").grid(row=0, column=1, padx=15)
-            ttk.Radiobutton(mode_frame, text="Face Normals", variable=self.mode, value="face_normals").grid(row=0, column=2, padx=15)
-            ttk.Radiobutton(mode_frame, text="Vertex Normals", variable=self.mode, value="vertex_normals").grid(row=0, column=3, padx=15)
-            ttk.Radiobutton(mode_frame, text="Flipped Normals", variable=self.mode, value="flipped_normals").grid(row=0, column=4, padx=15)
+        ttk.Button(button_frame, text="🔄 Reset View", width=15, command=self.reset_view)\
+            .pack(side="left", padx=20)
 
-            button_frame = ttk.Frame(self.content)
-            button_frame.grid(row=2, column=0, pady=15)
+        ttk.Button(button_frame, text="🧹 Clear Scene", width=15, command=self.clear_scene)\
+            .pack(side="left", padx=20)
 
-            ttk.Button(button_frame, text="🧪 Run Inspect", width=15, command=self.run_inspect)\
-                .pack(side="left", padx=20)
+        mode_frame = ttk.LabelFrame(self.content, text="Inspect Mode")
+        mode_frame.grid(row=1, column=0, pady=10)
 
-            ttk.Button(button_frame, text="🧹 Clear View", width=15, command=self.clear_view)\
-                .pack(side="left", padx=20)
+        ttk.Radiobutton(mode_frame, text="Boundary Edges",
+                        variable=self.mode, value="boundary").grid(row=0, column=0, padx=10)
 
-            self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
-            self.viewer_frame.grid(row=3, column=0, sticky="nsew", padx=120, pady=10)
+        ttk.Radiobutton(mode_frame, text="Non-Manifold Edges",
+                        variable=self.mode, value="non_manifold").grid(row=0, column=1, padx=10)
 
-            self.add_footer_button(
-                "🏠 Return to Home",
-                lambda: self.controller.show_frame("HomeInterface")
-            )
+        ttk.Radiobutton(mode_frame, text="Face Normals",
+                        variable=self.mode, value="face_normals").grid(row=0, column=2, padx=10)
 
-        except Exception as e:
-            messagebox.showerror("UI Error", str(e))
+        ttk.Radiobutton(mode_frame, text="Vertex Normals",
+                        variable=self.mode, value="vertex_normals").grid(row=0, column=3, padx=10)
 
-        self.inspect_runner = InspectRunner(self.viewer_frame)
+        ttk.Radiobutton(mode_frame, text="Flipped Normals",
+                        variable=self.mode, value="flipped_normals").grid(row=0, column=4, padx=10)
+
+        self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
+        self.viewer_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
+
+        self.add_footer_button(
+            "🏠 Return to Home",
+            lambda: self.controller.show_frame("HomeInterface")
+        )
+
+    def on_enter(self):
+        if self.engine:
+            self.engine.set_axis(True)
+            self.engine.reset_view()
+
+    def on_exit(self):
+        if self.engine:
+            self.engine.clear_all()
+            self.engine.set_axis(False)
+        
+        self.mode.set("")
+        self.controller.set_title()
+
+        self.current_file = None
+        self.has_render = False
+        self.has_overlay = False
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
             filetypes=[("3D Models", "*.stl *.obj *.ply")]
         )
         if file_path:
-            self.selected_file.set(file_path)
+            self.current_file = file_path
 
-    def run_inspect(self):
-        file_path = self.selected_file.get().strip()
+            file_name = os.path.basename(file_path)
+            self.controller.set_title(file_name)
+
+    def inspect_model(self):
+        file_path = self.current_file
 
         if not file_path or not os.path.exists(file_path):
             messagebox.showerror("Invalid File", "Please select a valid 3D model.")
@@ -91,38 +105,30 @@ class InspectInterface(BaseScreen):
             messagebox.showwarning("No Mode Selected", "Select an inspect mode.")
             return
 
-        try:
-            result = self.inspect_runner.inspect(file_path, self.mode.get())
+        self.runner.run(file_path, self.mode.get())
 
-            if result["status"] != "success":
-                messagebox.showerror("Inspect Error", result["message"])
-                return
+        self.has_render = True
+        self.has_overlay = True
 
-            self.has_render = True
-            self.has_overlay = True
-
-        except Exception as e:
-            messagebox.showerror("Inspect Error", str(e))
-
-    def clear_view(self):
-        if not self.has_render and not self.has_overlay:
-            messagebox.showwarning("Nothing to Clear", "No rendered model available.")
+    def reset_view(self):
+        if not self.engine:
             return
         
-        if self.inspect_runner:
-            self.inspect_runner.reset_scene()
+        if not self.has_render:
+            messagebox.showwarning("No Model Rendered", "Render a model first.")
+            return
 
-            self.has_render = False
-            self.has_overlay = False
+        self.engine.reset_view()
+        self.engine.set_axis(False)
 
-    def reset(self):
-        if self.has_overlay or self.has_render:
-            self.inspect_runner.reset_scene()
-            self.has_render = False
-            self.has_overlay = False
+    def clear_scene(self):
+        if not self.has_render:
+            messagebox.showwarning("Nothing to Clear", "No rendered model available.")
+            return
 
-        else:
-            self.inspect_runner.reset_view()
+        self.engine.clear_all()
+        self.engine.reset_view()
+        self.engine.set_axis(True)
 
-        self.selected_file.set("")
-        self.mode.set("")
+        self.has_render = False
+        self.has_overlay = False

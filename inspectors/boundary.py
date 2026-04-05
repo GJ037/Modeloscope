@@ -1,51 +1,32 @@
+import numpy as np
 from collections import defaultdict
-from .base import BaseInspector
 
 
-class BoundaryInspector(BaseInspector):
-    """
-    Detects boundary edges in a mesh.
+class BoundaryInspector:
 
-    Responsibilities:
-    - Identifies edges that belong to only one face
-    - Highlights open boundaries or holes in the mesh
-
-    Used to detect mesh incompleteness and topology issues related
-    to missing faces or non-closed surfaces.
-    """
-
-    def inspect(self, model, context=None):
+    def inspect(self, model):
         if model is None:
-            return self.error("Model is None")
+            raise ValueError("Model is None")
 
-        try:
-            edge_count = defaultdict(int)
-            faces = model.faces
+        faces = model.faces
+        vertex_count = len(model.vertices)
 
-            for face in faces:
-                v0, v1, v2 = face
+        edge_count = defaultdict(int)
 
-                edges = [
-                    tuple(sorted((v0, v1))),
-                    tuple(sorted((v1, v2))),
-                    tuple(sorted((v2, v0)))
-                ]
-
-                for edge in edges:
-                    edge_count[edge] += 1
-
-            boundary_edges = [
-                edge for edge, count in edge_count.items() if count == 1
+        for v0, v1, v2 in faces:
+            edges = [
+                tuple(sorted((v0, v1))),
+                tuple(sorted((v1, v2))),
+                tuple(sorted((v2, v0)))
             ]
+            for e in edges:
+                edge_count[e] += 1
 
-            data = {
-                "type": "boundary_edges",
-                "payload": {
-                    "edges": boundary_edges
-                }
-            }
+        values = np.zeros(vertex_count)
 
-            return self.success(data)
+        for (v0, v1), count in edge_count.items():
+            if count == 1:
+                values[v0] += 1
+                values[v1] += 1
 
-        except Exception as e:
-            return self.error(str(e))
+        return values
