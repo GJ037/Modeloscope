@@ -32,32 +32,32 @@ class InspectInterface(BaseScreen):
         ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)\
             .pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="🧪 Inspect Model", width=15, command=self.inspect_model)\
-            .pack(side="left", padx=20)
+        self.inspect_button = ttk.Button(button_frame, text="🧪 Inspect Model", width=15, command=self.inspect_model)
+        self.inspect_button.pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="🔄 Reset View", width=15, command=self.reset_view)\
-            .pack(side="left", padx=20)
+        self.reset_button = ttk.Button(button_frame, text="🔄 Reset View", width=15, command=self.reset_view)
+        self.reset_button.pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="🧹 Clear Scene", width=15, command=self.clear_scene)\
-            .pack(side="left", padx=20)
+        self.clear_button = ttk.Button(button_frame, text="🧹 Clear Scene", width=15, command=self.clear_scene)
+        self.clear_button.pack(side="left", padx=20)
 
-        mode_frame = ttk.LabelFrame(self.content, text="Inspect Mode")
+        mode_frame = ttk.LabelFrame(self.content, text="Inspect Modes")
         mode_frame.grid(row=1, column=0, pady=10)
 
-        ttk.Radiobutton(mode_frame, text="Boundary Edges",
-                        variable=self.mode, value="boundary").grid(row=0, column=0, padx=10)
+        ttk.Radiobutton(mode_frame, text="Boundary Edges", variable=self.mode, value="boundary", command=self.update_states)\
+            .grid(row=0, column=0, padx=10)
 
-        ttk.Radiobutton(mode_frame, text="Non-Manifold Edges",
-                        variable=self.mode, value="non_manifold").grid(row=0, column=1, padx=10)
+        ttk.Radiobutton(mode_frame, text="Non-Manifold Edges", variable=self.mode, value="non_manifold", command=self.update_states)\
+            .grid(row=0, column=1, padx=10)
 
-        ttk.Radiobutton(mode_frame, text="Face Normals",
-                        variable=self.mode, value="face_normals").grid(row=0, column=2, padx=10)
+        ttk.Radiobutton(mode_frame, text="Face Normals", variable=self.mode, value="face_normals", command=self.update_states)\
+            .grid(row=0, column=2, padx=10)
 
-        ttk.Radiobutton(mode_frame, text="Vertex Normals",
-                        variable=self.mode, value="vertex_normals").grid(row=0, column=3, padx=10)
+        ttk.Radiobutton(mode_frame, text="Vertex Normals", variable=self.mode, value="vertex_normals", command=self.update_states)\
+            .grid(row=0, column=3, padx=10)
 
-        ttk.Radiobutton(mode_frame, text="Flipped Normals",
-                        variable=self.mode, value="flipped_normals").grid(row=0, column=4, padx=10)
+        ttk.Radiobutton(mode_frame, text="Flipped Normals", variable=self.mode, value="flipped_normals", command=self.update_states)\
+            .grid(row=0, column=4, padx=10)
 
         self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
         self.viewer_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
@@ -71,6 +71,8 @@ class InspectInterface(BaseScreen):
         if self.engine:
             self.engine.set_axis(True)
             self.engine.reset_view()
+        
+        self.update_states()
 
     def on_exit(self):
         if self.engine:
@@ -83,6 +85,16 @@ class InspectInterface(BaseScreen):
         self.current_file = None
         self.has_render = False
         self.has_overlay = False
+        self.update_states()
+
+    def update_states(self):
+        has_file = self.current_file is not None
+        has_mode = bool(self.mode.get())
+        has_render = self.has_render
+
+        self.inspect_button.config(state="normal" if (has_file and has_mode) else "disabled")
+        self.reset_button.config(state="normal" if has_render else "disabled")
+        self.clear_button.config(state="normal" if has_render else "disabled")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
@@ -93,6 +105,7 @@ class InspectInterface(BaseScreen):
 
             file_name = os.path.basename(file_path)
             self.controller.set_title(file_name)
+            self.update_states()
 
     def inspect_model(self):
         file_path = self.current_file
@@ -109,6 +122,8 @@ class InspectInterface(BaseScreen):
 
         self.has_render = True
         self.has_overlay = True
+
+        self.update_states()
 
     def reset_view(self):
         if not self.engine:
@@ -132,3 +147,5 @@ class InspectInterface(BaseScreen):
 
         self.has_render = False
         self.has_overlay = False
+
+        self.update_states()
