@@ -32,20 +32,33 @@ class AnalyzeInterface(BaseScreen):
         ttk.Button(button_frame, text="🧹 Clear Report", width=15, command=self.clear_report)\
             .pack(side="left", padx=20)
 
-        toggle_frame = ttk.LabelFrame(self.content, text="Select Analysis Modes")
+        toggle_frame = ttk.LabelFrame(self.content, text="Analysis Modes")
         toggle_frame.grid(row=1, column=0, pady=10)
 
+        self.toggle_var = tk.BooleanVar()
         self.meta_var = tk.BooleanVar()
         self.geometry_var = tk.BooleanVar()
         self.topology_var = tk.BooleanVar()
         self.quality_var = tk.BooleanVar()
         self.performance_var = tk.BooleanVar()
 
-        ttk.Checkbutton(toggle_frame, text="Meta", variable=self.meta_var).grid(row=0, column=0, padx=15)
-        ttk.Checkbutton(toggle_frame, text="Topology", variable=self.topology_var).grid(row=0, column=1, padx=15)
-        ttk.Checkbutton(toggle_frame, text="Geometry", variable=self.geometry_var).grid(row=0, column=2, padx=15)
-        ttk.Checkbutton(toggle_frame, text="Quality", variable=self.quality_var).grid(row=0, column=3, padx=15)
-        ttk.Checkbutton(toggle_frame, text="Performance", variable=self.performance_var).grid(row=0, column=4, padx=15)
+        ttk.Checkbutton(toggle_frame, text="All/None", variable=self.toggle_var, command=self.handle_toggle)\
+            .grid(row=0, column=0, padx=15)
+
+        ttk.Checkbutton(toggle_frame, text="Meta", variable=self.meta_var, command=self.update_toggle)\
+            .grid(row=0, column=1, padx=15)
+
+        ttk.Checkbutton(toggle_frame, text="Topology", variable=self.topology_var, command=self.update_toggle)\
+            .grid(row=0, column=2, padx=15)
+
+        ttk.Checkbutton(toggle_frame, text="Geometry", variable=self.geometry_var, command=self.update_toggle)\
+            .grid(row=0, column=3, padx=15)
+
+        ttk.Checkbutton(toggle_frame, text="Quality", variable=self.quality_var, command=self.update_toggle)\
+            .grid(row=0, column=4, padx=15)
+
+        ttk.Checkbutton(toggle_frame, text="Performance", variable=self.performance_var, command=self.update_toggle)\
+            .grid(row=0, column=5, padx=15)
 
         output_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
         output_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
@@ -68,6 +81,8 @@ class AnalyzeInterface(BaseScreen):
 
     def on_enter(self):
         self.current_file = None
+
+        self.toggle_var.set(False)
         self.meta_var.set(False)
         self.topology_var.set(False)
         self.geometry_var.set(False)
@@ -85,6 +100,7 @@ class AnalyzeInterface(BaseScreen):
         self.controller.set_title()
         self.current_file = None
 
+        self.toggle_var.set(False)
         self.meta_var.set(False)
         self.topology_var.set(False)
         self.geometry_var.set(False)
@@ -108,6 +124,26 @@ class AnalyzeInterface(BaseScreen):
 
             file_name = os.path.basename(file_path)
             self.controller.set_title(file_name)
+
+    def handle_toggle(self):
+        state = self.toggle_var.get()
+
+        self.meta_var.set(state)
+        self.topology_var.set(state)
+        self.geometry_var.set(state)
+        self.quality_var.set(state)
+        self.performance_var.set(state)
+
+    def update_toggle(self):
+        all_modes = (
+            self.meta_var.get() and
+            self.topology_var.get() and
+            self.geometry_var.get() and
+            self.quality_var.get() and
+            self.performance_var.get()
+        )
+
+        self.toggle_var.set(all_modes)
 
     def run_analysis(self):
         file_path = self.current_file
