@@ -31,22 +31,29 @@ class RenderInterface(BaseScreen):
         ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)\
             .pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="🎨 Draw Render", width=15, command=self.draw_render)\
-            .pack(side="left", padx=20)
+        self.render_button = ttk.Button(button_frame, text="🎨 Draw Render", width=15, command=self.draw_render)
+        self.render_button.pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="🔄 Reset View", width=15, command=self.reset_view)\
-            .pack(side="left", padx=20)
+        self.reset_button = ttk.Button(button_frame, text="🔄 Reset View", width=15, command=self.reset_view)
+        self.reset_button.pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="🧹 Clear Scene", width=15, command=self.clear_scene)\
-            .pack(side="left", padx=20)
+        self.clear_button = ttk.Button(button_frame, text="🧹 Clear Scene", width=15, command=self.clear_scene)
+        self.clear_button.pack(side="left", padx=20)
 
-        toggle_frame = ttk.LabelFrame(self.content, text="Select Render Mode")
+        toggle_frame = ttk.LabelFrame(self.content, text="Render Modes")
         toggle_frame.grid(row=1, column=0, pady=10)
 
-        ttk.Radiobutton(toggle_frame, text="Flat", variable=self.mode, value="flat").grid(row=0, column=0, padx=15)
-        ttk.Radiobutton(toggle_frame, text="Shaded", variable=self.mode, value="shaded").grid(row=0, column=1, padx=15)
-        ttk.Radiobutton(toggle_frame, text="Wireframe", variable=self.mode, value="wireframe").grid(row=0, column=2, padx=15)
-        ttk.Radiobutton(toggle_frame, text="Point Cloud", variable=self.mode, value="pointcloud").grid(row=0, column=3, padx=15)
+        ttk.Radiobutton(toggle_frame, text="Flat", variable=self.mode, value="flat", command=self.update_states)\
+            .grid(row=0, column=0, padx=15)
+
+        ttk.Radiobutton(toggle_frame, text="Shaded", variable=self.mode, value="shaded", command=self.update_states)\
+            .grid(row=0, column=1, padx=15)
+
+        ttk.Radiobutton(toggle_frame, text="Wireframe", variable=self.mode, value="wireframe", command=self.update_states)\
+            .grid(row=0, column=2, padx=15)
+
+        ttk.Radiobutton(toggle_frame, text="Point Cloud", variable=self.mode, value="pointcloud", command=self.update_states)\
+            .grid(row=0, column=3, padx=15)
 
         self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
         self.viewer_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
@@ -61,6 +68,8 @@ class RenderInterface(BaseScreen):
             self.engine.set_axis(True)
             self.engine.reset_view()
 
+        self.update_states()
+
     def on_exit(self):
         if self.engine:
             self.engine.clear_visuals()
@@ -68,8 +77,19 @@ class RenderInterface(BaseScreen):
 
         self.mode.set("")       
         self.controller.set_title()
+
         self.current_file = None
         self.has_render = False
+        self.update_states()
+
+    def update_states(self):
+        has_file = self.current_file is not None
+        has_mode = bool(self.mode.get())
+        has_render = self.has_render
+
+        self.render_button.config(state="normal" if (has_file and has_mode) else "disabled")
+        self.reset_button.config(state="normal" if has_render else "disabled")
+        self.clear_button.config(state="normal" if has_render else "disabled")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
@@ -80,6 +100,7 @@ class RenderInterface(BaseScreen):
 
             file_name = os.path.basename(file_path)
             self.controller.set_title(file_name)
+            self.update_states()
 
     def draw_render(self):
         file_path = self.current_file
@@ -94,6 +115,8 @@ class RenderInterface(BaseScreen):
 
         self.runner.run(file_path, self.mode.get())
         self.has_render = True
+
+        self.update_states()
 
     def reset_view(self):
         if not self.engine:
@@ -116,3 +139,4 @@ class RenderInterface(BaseScreen):
         self.engine.set_axis(True)
 
         self.has_render = False
+        self.update_states()

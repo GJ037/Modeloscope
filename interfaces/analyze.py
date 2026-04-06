@@ -23,14 +23,14 @@ class AnalyzeInterface(BaseScreen):
         ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)\
             .pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="📄 Run Analysis", width=15, command=self.run_analysis)\
-            .pack(side="left", padx=20)
+        self.run_button = ttk.Button(button_frame, text="📄 Run Analysis", width=15, command=self.run_analysis)
+        self.run_button.pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="💾 Export Result", width=15, command=self.export_result)\
-            .pack(side="left", padx=20)
+        self.export_button = ttk.Button(button_frame, text="💾 Export Result", width=15, command=self.export_result)
+        self.export_button.pack(side="left", padx=20)
 
-        ttk.Button(button_frame, text="🧹 Clear Report", width=15, command=self.clear_report)\
-            .pack(side="left", padx=20)
+        self.clear_button = ttk.Button(button_frame, text="🧹 Clear Report", width=15, command=self.clear_report)
+        self.clear_button.pack(side="left", padx=20)
 
         toggle_frame = ttk.LabelFrame(self.content, text="Analysis Modes")
         toggle_frame.grid(row=1, column=0, pady=10)
@@ -42,22 +42,28 @@ class AnalyzeInterface(BaseScreen):
         self.quality_var = tk.BooleanVar()
         self.performance_var = tk.BooleanVar()
 
-        ttk.Checkbutton(toggle_frame, text="All/None", variable=self.toggle_var, command=self.handle_toggle)\
+        ttk.Checkbutton(toggle_frame, text="All/None", variable=self.toggle_var, 
+                        command=lambda: [self.handle_toggle(), self.update_states()])\
             .grid(row=0, column=0, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Meta", variable=self.meta_var, command=self.update_toggle)\
+        ttk.Checkbutton(toggle_frame, text="Meta", variable=self.meta_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])\
             .grid(row=0, column=1, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Topology", variable=self.topology_var, command=self.update_toggle)\
+        ttk.Checkbutton(toggle_frame, text="Topology", variable=self.topology_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])\
             .grid(row=0, column=2, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Geometry", variable=self.geometry_var, command=self.update_toggle)\
+        ttk.Checkbutton(toggle_frame, text="Geometry", variable=self.geometry_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])\
             .grid(row=0, column=3, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Quality", variable=self.quality_var, command=self.update_toggle)\
+        ttk.Checkbutton(toggle_frame, text="Quality", variable=self.quality_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])\
             .grid(row=0, column=4, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Performance", variable=self.performance_var, command=self.update_toggle)\
+        ttk.Checkbutton(toggle_frame, text="Performance", variable=self.performance_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])\
             .grid(row=0, column=5, padx=15)
 
         output_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
@@ -95,6 +101,7 @@ class AnalyzeInterface(BaseScreen):
 
         self.last_report = None
         self.has_report = False
+        self.update_states()
 
     def on_exit(self):
         self.controller.set_title()
@@ -113,17 +120,7 @@ class AnalyzeInterface(BaseScreen):
 
         self.last_report = None
         self.has_report = False
-
-    def browse_file(self):
-        file_path = filedialog.askopenfilename(
-            title="Select 3D File",
-            filetypes=[("3D Models", "*.stl *.obj *.ply")]
-        )
-        if file_path:
-            self.current_file = file_path
-
-            file_name = os.path.basename(file_path)
-            self.controller.set_title(file_name)
+        self.update_states()
 
     def handle_toggle(self):
         state = self.toggle_var.get()
@@ -144,6 +141,56 @@ class AnalyzeInterface(BaseScreen):
         )
 
         self.toggle_var.set(all_modes)
+
+    def update_states(self):
+        has_file = self.current_file is not None and os.path.exists(self.current_file)
+
+        has_modes = (
+            self.meta_var.get() or
+            self.topology_var.get() or
+            self.geometry_var.get() or
+            self.quality_var.get() or
+            self.performance_var.get()
+        )
+
+        has_report = self.has_report
+
+        self.run_button.config(state="normal" if (has_file and has_modes) else "disabled")
+        self.export_button.config(state="normal" if has_report else "disabled")
+        self.clear_button.config(state="normal" if has_report else "disabled")
+
+    def browse_file(self):
+        file_path = filedialog.askopenfilename(
+            title="Select 3D File",
+            filetypes=[("3D Models", "*.stl *.obj *.ply")]
+        )
+        if file_path:
+            self.current_file = file_path
+
+            file_name = os.path.basename(file_path)
+            self.controller.set_title(file_name)
+            self.update_states()
+
+    def display_report(self, report):
+        self.console.config(state="normal")
+        self.console.delete("1.0", tk.END)
+
+        self.console.tag_configure("section", font=("Segoe UI", 11, "bold"))
+        self.console.tag_configure("metric", font=("Consolas", 10))
+
+        for section, data in report.items():
+            self.console.insert(tk.END, f"{section.upper()}\n", "section")
+            self.console.insert(tk.END, "=" * 50 + "\n\n", "section")
+
+            if isinstance(data, dict):
+                for key, value in data.items():
+                    formatted_key = key.replace("_", " ").title()
+                    line = f"{formatted_key:<25} : {value}\n"
+                    self.console.insert(tk.END, line, "metric")
+
+            self.console.insert(tk.END, "\n\n")
+
+        self.console.config(state="disabled")
 
     def run_analysis(self):
         file_path = self.current_file
@@ -170,26 +217,7 @@ class AnalyzeInterface(BaseScreen):
         self.last_report = report
         self.has_report = True
 
-    def display_report(self, report):
-        self.console.config(state="normal")
-        self.console.delete("1.0", tk.END)
-
-        self.console.tag_configure("section", font=("Segoe UI", 11, "bold"))
-        self.console.tag_configure("metric", font=("Consolas", 10))
-
-        for section, data in report.items():
-            self.console.insert(tk.END, f"{section.upper()}\n", "section")
-            self.console.insert(tk.END, "=" * 50 + "\n\n", "section")
-
-            if isinstance(data, dict):
-                for key, value in data.items():
-                    formatted_key = key.replace("_", " ").title()
-                    line = f"{formatted_key:<25} : {value}\n"
-                    self.console.insert(tk.END, line, "metric")
-
-            self.console.insert(tk.END, "\n\n")
-
-        self.console.config(state="disabled")
+        self.update_states()
 
     def export_result(self):
         if not self.last_report:
@@ -239,3 +267,5 @@ class AnalyzeInterface(BaseScreen):
 
         self.last_report = None
         self.has_report = False
+
+        self.update_states()
