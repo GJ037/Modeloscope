@@ -4,7 +4,7 @@ from tkinter import ttk
 
 class BaseInterface(tk.Tk):
 
-    def __init__(self, title="Modeloscope_v3.2", size="1024x768"):
+    def __init__(self, title="Modeloscope", size="1024x768"):
         super().__init__()
 
         self.current_frame = None
