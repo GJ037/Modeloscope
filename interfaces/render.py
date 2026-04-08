@@ -37,7 +37,7 @@ class RenderInterface(BaseScreen):
         self.reset_button = ttk.Button(button_frame, text="🔄 Reset View", width=15, command=self.reset_view)
         self.reset_button.pack(side="left", padx=20)
 
-        self.clear_button = ttk.Button(button_frame, text="🧹 Clear Scene", width=15, command=self.clear_scene)
+        self.clear_button = ttk.Button(button_frame, text="🧹 Clear", width=15, command=self.clear)
         self.clear_button.pack(side="left", padx=20)
 
         toggle_frame = ttk.LabelFrame(self.content, text="Render Modes")
@@ -66,20 +66,15 @@ class RenderInterface(BaseScreen):
     def on_enter(self):
         if self.engine:
             self.engine.set_axis(True)
-            self.engine.reset_view()
 
         self.update_states()
 
     def on_exit(self):
+        self.reset_ui()
+
         if self.engine:
-            self.engine.clear_visuals()
             self.engine.set_axis(False)
 
-        self.mode.set("")       
-        self.controller.set_title()
-
-        self.current_file = None
-        self.has_render = False
         self.update_states()
 
     def update_states(self):
@@ -87,15 +82,18 @@ class RenderInterface(BaseScreen):
         has_mode = bool(self.mode.get())
         has_render = self.has_render
 
+        has_anything = has_file or has_mode or has_render
+
         self.render_button.config(state="normal" if (has_file and has_mode) else "disabled")
         self.reset_button.config(state="normal" if has_render else "disabled")
-        self.clear_button.config(state="normal" if has_render else "disabled")
+        self.clear_button.config(state="normal" if has_anything else "disabled")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
             filetypes=[("3D Models", "*.stl *.obj *.ply")]
         )
         if file_path:
+            self.reset_ui()
             self.current_file = file_path
 
             file_name = os.path.basename(file_path)
@@ -113,7 +111,13 @@ class RenderInterface(BaseScreen):
             messagebox.showwarning("No Mode Selected", "Select a render mode.")
             return
 
-        self.runner.run(file_path, self.mode.get())
+        try:
+            self.runner.run(file_path, self.mode.get())
+
+        except Exception as e:
+            messagebox.showerror("Render Error", str(e))
+            return
+
         self.has_render = True
 
         self.update_states()
@@ -129,14 +133,18 @@ class RenderInterface(BaseScreen):
         self.engine.reset_view()
         self.engine.set_axis(False)
 
-    def clear_scene(self):
-        if not self.has_render:
-            messagebox.showwarning("Nothing to Clear", "No rendered model available.")
-            return
-
-        self.engine.clear_visuals()
-        self.engine.reset_view()
-        self.engine.set_axis(True)
-
-        self.has_render = False
+    def clear(self):
+        self.reset_ui()
         self.update_states()
+
+    def reset_ui(self):
+        if self.engine:
+            self.engine.clear_visuals()
+            self.engine.reset_view()
+            self.engine.set_axis(True)
+
+        self.mode.set("")
+        self.controller.set_title()
+
+        self.current_file = None
+        self.has_render = False

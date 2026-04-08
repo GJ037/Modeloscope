@@ -29,7 +29,7 @@ class AnalyzeInterface(BaseScreen):
         self.export_button = ttk.Button(button_frame, text="💾 Export Result", width=15, command=self.export_result)
         self.export_button.pack(side="left", padx=20)
 
-        self.clear_button = ttk.Button(button_frame, text="🧹 Clear Report", width=15, command=self.clear_report)
+        self.clear_button = ttk.Button(button_frame, text="🧹 Clear", width=15, command=self.clear)
         self.clear_button.pack(side="left", padx=20)
 
         toggle_frame = ttk.LabelFrame(self.content, text="Analysis Modes")
@@ -86,40 +86,11 @@ class AnalyzeInterface(BaseScreen):
         )
 
     def on_enter(self):
-        self.current_file = None
-
-        self.toggle_var.set(False)
-        self.meta_var.set(False)
-        self.topology_var.set(False)
-        self.geometry_var.set(False)
-        self.quality_var.set(False)
-        self.performance_var.set(False)
-
-        self.console.config(state="normal")
-        self.console.delete("1.0", tk.END)
-        self.console.config(state="disabled")
-
-        self.last_report = None
-        self.has_report = False
+        self.reset_ui()
         self.update_states()
 
     def on_exit(self):
-        self.controller.set_title()
-        self.current_file = None
-
-        self.toggle_var.set(False)
-        self.meta_var.set(False)
-        self.topology_var.set(False)
-        self.geometry_var.set(False)
-        self.quality_var.set(False)
-        self.performance_var.set(False)
-
-        self.console.config(state="normal")
-        self.console.delete("1.0", tk.END)
-        self.console.config(state="disabled")
-
-        self.last_report = None
-        self.has_report = False
+        self.reset_ui()
         self.update_states()
 
     def handle_toggle(self):
@@ -154,10 +125,11 @@ class AnalyzeInterface(BaseScreen):
         )
 
         has_report = self.has_report
+        has_anything = has_file or has_modes or has_report
 
         self.run_button.config(state="normal" if (has_file and has_modes) else "disabled")
         self.export_button.config(state="normal" if has_report else "disabled")
-        self.clear_button.config(state="normal" if has_report else "disabled")
+        self.clear_button.config(state="normal" if has_anything else "disabled")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
@@ -165,6 +137,7 @@ class AnalyzeInterface(BaseScreen):
             filetypes=[("3D Models", "*.stl *.obj *.ply")]
         )
         if file_path:
+            self.reset_ui()
             self.current_file = file_path
 
             file_name = os.path.basename(file_path)
@@ -256,10 +229,20 @@ class AnalyzeInterface(BaseScreen):
 
             messagebox.showinfo("Export Success", "Report exported successfully.")
 
-    def clear_report(self):
-        if not self.has_report:
-            messagebox.showwarning("Nothing to Clear", "No analysis report available.")
-            return
+    def clear(self):
+        self.reset_ui()
+        self.update_states()
+
+    def reset_ui(self):
+        self.current_file = None
+        self.controller.set_title()
+
+        self.toggle_var.set(False)
+        self.meta_var.set(False)
+        self.topology_var.set(False)
+        self.geometry_var.set(False)
+        self.quality_var.set(False)
+        self.performance_var.set(False)
 
         self.console.config(state="normal")
         self.console.delete("1.0", tk.END)
@@ -267,5 +250,3 @@ class AnalyzeInterface(BaseScreen):
 
         self.last_report = None
         self.has_report = False
-
-        self.update_states()
