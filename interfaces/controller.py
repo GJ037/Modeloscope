@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 
-class BaseInterface(tk.Tk):
+class Controller(tk.Tk):
 
     def __init__(self, title="Modeloscope", size="1024x768"):
         super().__init__()

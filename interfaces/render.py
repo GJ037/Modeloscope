@@ -112,14 +112,14 @@ class RenderInterface(BaseScreen):
             return
 
         try:
-            self.runner.run(file_path, self.mode.get())
+            model_data = self.runner.load(file_path, self.mode.get())
+            self.runner.render(*model_data)
 
         except Exception as e:
             messagebox.showerror("Render Error", str(e))
             return
 
         self.has_render = True
-
         self.update_states()
 
     def reset_view(self):

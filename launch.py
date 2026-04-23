@@ -1,4 +1,4 @@
-from interfaces.base import BaseInterface
+from interfaces.controller import Controller
 from interfaces.home import HomeInterface
 from interfaces.analyze import AnalyzeInterface
 from interfaces.render import RenderInterface
@@ -6,7 +6,7 @@ from interfaces.inspect import InspectInterface
 
 
 def main():
-    app = BaseInterface()
+    app = Controller()
 
     app.add_frame("HomeInterface", HomeInterface)
     app.add_frame("AnalyzeInterface", AnalyzeInterface)
