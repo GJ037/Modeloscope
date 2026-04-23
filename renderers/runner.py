@@ -17,16 +17,20 @@ class RenderRunner:
     def __init__(self, engine):
         self.engine = engine
 
-    def run(self, file_path, mode):
+    def load(self, file_path, mode):
         if not file_path:
             raise ValueError("Invalid file path")
 
         model, meta = ModelLoader().load(file_path)
-        self.engine.clear_all()
 
         renderer_class = RENDERERS.get(mode)
         if not renderer_class:
             raise ValueError(f"Unknown render mode: {mode}")
+        
+        return model, renderer_class
+    
+    def render(self, model, renderer_class):
+        self.engine.clear_all()
 
         renderer = renderer_class()
         renderer.render(self.engine, model)

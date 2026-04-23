@@ -116,7 +116,8 @@ class InspectInterface(BaseScreen):
             return
 
         try:
-            self.runner.run(file_path, self.mode.get())
+            model_data = self.runner.load(file_path, self.mode.get())
+            self.runner.inspect(*model_data)
 
         except Exception as e:
             messagebox.showerror("Inspect Error", str(e))

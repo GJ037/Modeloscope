@@ -20,7 +20,7 @@ class InspectRunner:
     def __init__(self, engine):
         self.engine = engine
 
-    def run(self, file_path, mode):
+    def load(self, file_path, mode):
         if not file_path:
             raise ValueError("Invalid file path")
 
@@ -30,10 +30,13 @@ class InspectRunner:
 
         model, meta = ModelLoader().load(file_path)
 
-        self.engine.clear_all()
-
         inspector = inspector_class()
         values = inspector.inspect(model)
+
+        return model, values
+
+    def inspect(self, model, values):
+        self.engine.clear_all()
 
         overlay = HeatmapOverlay()
         overlay.heatmap(self.engine, model, values)
