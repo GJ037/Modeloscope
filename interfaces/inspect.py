@@ -125,7 +125,6 @@ class InspectInterface(BaseScreen):
 
         self.has_render = True
         self.has_overlay = True
-
         self.update_states()
 
     def reset_view(self):
