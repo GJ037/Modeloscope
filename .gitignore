@@ -13,3 +13,6 @@ models/
 *.stl
 *.obj
 *.ply
+
+# Icon
+*.ico
