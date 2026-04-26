@@ -14,7 +14,7 @@ ANALYZERS = {
 
 class AnalyzerRunner:
 
-    def run(self, file_path, modes):
+    def analyze(self, file_path, modes):
         if not file_path:
             raise ValueError("Invalid file path")
 

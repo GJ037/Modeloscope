@@ -184,7 +184,7 @@ class AnalyzeInterface(BaseScreen):
             return
 
         runner = AnalyzerRunner()
-        report = runner.run(file_path, modes)
+        report = runner.analyze(file_path, modes)
 
         self.display_report(report)
         self.last_report = report
