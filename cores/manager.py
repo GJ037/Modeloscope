@@ -9,7 +9,6 @@ class TaskManager:
         future = self.executor.submit(func)
 
         def callback(future):
-
             try:
                 result = future.result()
                 if on_success:
