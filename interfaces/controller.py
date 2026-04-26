@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from cores.manager import TaskManager
 
 
 class Controller(tk.Tk):
@@ -7,6 +8,7 @@ class Controller(tk.Tk):
     def __init__(self, title="Modeloscope", size="1024x768"):
         super().__init__()
 
+        self.task_manager = TaskManager(self)
         self.current_frame = None
 
         self.base_title = title
@@ -60,4 +62,5 @@ class Controller(tk.Tk):
         self.current_frame = new_frame
 
     def exit_app(self):
+        self.task_manager.executor.shutdown(wait=False)
         self.destroy()

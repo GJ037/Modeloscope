@@ -8,9 +8,15 @@ class AnalyzeInterface(BaseScreen):
 
     def __init__(self, parent, controller):
         super().__init__(parent, controller, title=None)
+
         self.current_file = None
         self.last_report = None
+
         self.has_report = False
+        self.is_loading = False
+        self.is_active = False
+
+        self.request_id = 0
         self.build_content()
 
     def build_content(self):
@@ -20,8 +26,8 @@ class AnalyzeInterface(BaseScreen):
         button_frame = ttk.Frame(self.content)
         button_frame.grid(row=0, column=0, pady=15)
 
-        ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)\
-            .pack(side="left", padx=20)
+        self.browse_button = ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)
+        self.browse_button.pack(side="left", padx=20)
 
         self.run_button = ttk.Button(button_frame, text="📄 Run Analysis", width=15, command=self.run_analysis)
         self.run_button.pack(side="left", padx=20)
@@ -42,29 +48,29 @@ class AnalyzeInterface(BaseScreen):
         self.quality_var = tk.BooleanVar()
         self.performance_var = tk.BooleanVar()
 
-        ttk.Checkbutton(toggle_frame, text="All/None", variable=self.toggle_var, 
-                        command=lambda: [self.handle_toggle(), self.update_states()])\
-            .grid(row=0, column=0, padx=15)
+        self.toggle_button = ttk.Checkbutton(toggle_frame, text="All/None", variable=self.toggle_var, 
+                        command=lambda: [self.handle_toggle(), self.update_states()])
+        self.toggle_button.grid(row=0, column=0, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Meta", variable=self.meta_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])\
-            .grid(row=0, column=1, padx=15)
+        self.meta_button = ttk.Checkbutton(toggle_frame, text="Meta", variable=self.meta_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])
+        self.meta_button.grid(row=0, column=1, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Topology", variable=self.topology_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])\
-            .grid(row=0, column=2, padx=15)
+        self.topology_button = ttk.Checkbutton(toggle_frame, text="Topology", variable=self.topology_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])
+        self.topology_button.grid(row=0, column=2, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Geometry", variable=self.geometry_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])\
-            .grid(row=0, column=3, padx=15)
+        self.geometry_button = ttk.Checkbutton(toggle_frame, text="Geometry", variable=self.geometry_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])
+        self.geometry_button.grid(row=0, column=3, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Quality", variable=self.quality_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])\
-            .grid(row=0, column=4, padx=15)
+        self.quality_button = ttk.Checkbutton(toggle_frame, text="Quality", variable=self.quality_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])
+        self.quality_button.grid(row=0, column=4, padx=15)
 
-        ttk.Checkbutton(toggle_frame, text="Performance", variable=self.performance_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])\
-            .grid(row=0, column=5, padx=15)
+        self.performance_button = ttk.Checkbutton(toggle_frame, text="Performance", variable=self.performance_var, 
+                        command=lambda: [self.update_toggle(), self.update_states()])
+        self.performance_button.grid(row=0, column=5, padx=15)
 
         output_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
         output_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
@@ -86,10 +92,13 @@ class AnalyzeInterface(BaseScreen):
         )
 
     def on_enter(self):
-        self.reset_ui()
+        self.is_active = True
         self.update_states()
 
     def on_exit(self):
+        self.request_id += 1
+        self.is_active = False
+
         self.reset_ui()
         self.update_states()
 
@@ -124,10 +133,22 @@ class AnalyzeInterface(BaseScreen):
             self.performance_var.get()
         )
 
+        is_loading = self.is_loading
+
         has_report = self.has_report
         has_anything = has_file or has_modes or has_report
 
-        self.run_button.config(state="normal" if (has_file and has_modes) else "disabled")
+        self.toggle_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.meta_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.geometry_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.topology_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.quality_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.performance_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+
+        self.browse_button.config(state="normal" if not is_loading else "disabled")
+        self.run_button.config(
+            state="normal" if (has_file and has_modes and not is_loading) else "disabled"
+        )
         self.export_button.config(state="normal" if has_report else "disabled")
         self.clear_button.config(state="normal" if has_anything else "disabled")
 
@@ -137,6 +158,8 @@ class AnalyzeInterface(BaseScreen):
             filetypes=[("3D Models", "*.stl *.obj *.ply")]
         )
         if file_path:
+            self.request_id += 1
+
             self.reset_ui()
             self.current_file = file_path
 
@@ -183,13 +206,37 @@ class AnalyzeInterface(BaseScreen):
             messagebox.showwarning("No Mode Selected", "Select an analysis mode.")
             return
 
+        self.is_loading = True
+        self.request_id += 1
+        current_id = self.request_id
+        self.update_states()
+
         runner = AnalyzerRunner()
-        report = runner.analyze(file_path, modes)
+
+        self.controller.task_manager.submit(
+            func=lambda: runner.analyze(file_path, modes),
+            on_success=lambda result: self.analysis_ready(result, current_id),
+            on_error=lambda error: self.analysis_error(error, current_id)
+        )
+
+    def analysis_ready(self, report, current_id):
+        if not self.is_active or current_id != self.request_id:
+            return
 
         self.display_report(report)
         self.last_report = report
         self.has_report = True
 
+        self.is_loading = False
+        self.update_states()
+
+    def analysis_error(self, error, current_id):
+        if not self.is_active or current_id != self.request_id:
+            return
+
+        messagebox.showerror("Analysis Error", str(error))
+
+        self.is_loading = False
         self.update_states()
 
     def export_result(self):
@@ -230,11 +277,12 @@ class AnalyzeInterface(BaseScreen):
             messagebox.showinfo("Export Success", "Report exported successfully.")
 
     def clear(self):
+        self.request_id += 1
+
         self.reset_ui()
         self.update_states()
 
     def reset_ui(self):
-        self.current_file = None
         self.controller.set_title()
 
         self.toggle_var.set(False)
@@ -248,5 +296,7 @@ class AnalyzeInterface(BaseScreen):
         self.console.delete("1.0", tk.END)
         self.console.config(state="disabled")
 
+        self.current_file = None
         self.last_report = None
         self.has_report = False
+        self.is_loading = False
