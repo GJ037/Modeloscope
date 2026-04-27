@@ -1,25 +1,26 @@
 # 🧠 Modeloscope
 
-**Modeloscope** is a desktop application for analyzing, visualizing, and inspecting 3D mesh models.
-It provides an integrated workflow combining **geometry analysis**, **interactive rendering**, and **visual inspection tools** in a single interface.
+**Modeloscope** is a project for analyzing, visualizing, and inspecting 3D models.
+It provides an integrated workflow combining **model analysis**, **interactive rendering**, and **visual inspection tools** in 3 different interfaces.
 
 ---
 
 ## 🚀 Features
 
-### 🔍 Analysis Engine
+### 🔍 Analysis Pipelne
 
+* Meta Data
 * Geometry analysis
 * Topology analysis
 * Quality metrics
 * Performance metrics
-* Toggle-based analyzers
+* Generate Rport
+* Export Report
 
 ### 🎨 3D Renderer
 
 * Interactive mesh visualization
 * Smooth camera controls (rotate, zoom, reset)
-* Scene axis display
 * Efficient rendering pipeline using VisPy
 
 ### 🧪 Inspection Pipeline
@@ -70,16 +71,13 @@ python launch.py
 ## 🧭 How to Use
 
 1. Launch the application
-2. Load a 3D model (`.stl / .obj / .ply`)
-3. Navigate using:
+2. Use different interfaces:
 
-   * Mouse drag → rotate
-   * Scroll → zoom
-4. Use different interfaces:
-
-   * **Render** → visualize mesh
    * **Analyze** → compute metrics
+   * **Render** → visualize mesh
    * **Inspect** → highlight features
+3. Load a 3D model (`.stl / .obj / .ply`)
+4. **Analyze**, **Render** or **Inspect**
 
 ---
 
@@ -90,12 +88,12 @@ Modeloscope is structured into modular systems:
 ```
 Modeloscope/
 │
-├── core/            # Core logic (rendering, analysis)
-├── interface/       # UI interfaces
+├── cores/            # Core logic (rendering, analysis)
+├── interfaces/       # UI interfaces
+├── analyzers/       # Analyzing Logics
 ├── renderers/       # Rendering implementations
 ├── inspectors/      # Inspection pipeline
-├── launch.py        # Entry point
-└── runner.py        # Legacy runner (if present)
+└── launch.py        # Entry point
 ```
 
 ---
@@ -114,14 +112,30 @@ Modeloscope/
 
 ### v3.4 (Latest)
 
-* Added application icon
-* UI polish and stability improvements
-* Maintained optimized build (~34MB)
+* Added Threading
+* Async Behaviour
+* Flow Changes
+
+## v3.3
+
+* Changed Clear Button
+* Various Improvements
+* State Handling
+* Quality Additions
 
 ### v3.2
 
-* Inspection pipeline refinements
-* Improved rendering + inspection integration
+* Added New Renderer
+* New Camera Movement
+* Exception Handeling
+* Fxied Hidden Bugs
+* Quality Additions
+
+## v3.1
+
+* Pipeline Standardization
+* Better Error Handling
+* Fixed Hidden Bugs
 
 ### v3.0
 
@@ -132,7 +146,15 @@ Modeloscope/
 
 * Removed SciPy dependency
 * Reduced build size (~63MB → ~34MB)
-* Improved performance
+* Architectural Overhaul
+* Improved UI Experience
+
+## v2.1
+
+* Changed Viewport Background
+* Improved Shaded Rendering
+* Improved Pointcloud rendering
+* Fixed Packaging Issues
 
 ### v2.0
 
@@ -150,16 +172,6 @@ Modeloscope/
 * No unnecessary dependencies
 * Clean packaging with PyInstaller
 * Cross-system compatibility
-
----
-
-## 🧩 Future Roadmap
-
-* Heatmap-based inspection
-* Edge and normal visualization
-* Model comparison tools
-* Export reports (JSON / PDF)
-* Installer support
 
 ---
 
