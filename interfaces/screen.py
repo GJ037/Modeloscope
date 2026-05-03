@@ -32,9 +32,9 @@ class BaseScreen(ttk.Frame):
 
     def set_loading(self, active: bool):
         if active:
-            self.config(cursor="watch")
+            self.controller.config(cursor="watch")
         else:
-            self.config(cursor="")
+            self.controller.config(cursor="")
 
     def _init_footer(self):
         self.footer = ttk.Frame(self)
