@@ -27,7 +27,6 @@ class HomeInterface(BaseScreen):
             command=lambda: self.controller.show_frame("InspectInterface")
         ).pack(pady=15)
 
-        self.add_footer_button(
-            "❌ Exit Application",
-            self.controller.exit_app
-        )
+        self.set_footer("❌ Exit Application", self.controller.exit_app)
+
+        self.apply_cursor(self)

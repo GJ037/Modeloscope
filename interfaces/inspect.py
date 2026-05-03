@@ -77,11 +77,11 @@ class InspectInterface(BaseScreen):
 
         self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
         self.viewer_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
+        self.viewer_frame.config(cursor="arrow")
 
-        self.add_footer_button(
-            "🏠 Return to Home",
-            lambda: self.controller.show_frame("HomeInterface")
-        )
+        self.set_footer("🏠 Return to Home", lambda: self.controller.show_frame("HomeInterface"))
+
+        self.apply_cursor(self)
 
     def on_enter(self):
         self.is_active = True
@@ -94,6 +94,7 @@ class InspectInterface(BaseScreen):
     def on_exit(self):
         self.request_id += 1
         self.is_active = False
+        self.set_loading(False)
 
         self.reset_ui()
 
@@ -149,6 +150,8 @@ class InspectInterface(BaseScreen):
             return
 
         self.is_loading = True
+        self.set_loading(True)
+
         self.request_id += 1
         current_id = self.request_id
         self.update_states()
@@ -168,6 +171,8 @@ class InspectInterface(BaseScreen):
         self.has_render = True
         self.has_overlay = True
         self.is_loading = False
+
+        self.set_loading(False)
         self.update_states()
 
     def inspect_error(self, error, current_id):
@@ -177,6 +182,7 @@ class InspectInterface(BaseScreen):
         messagebox.showerror("Inspect Error", str(error))
 
         self.is_loading = False
+        self.set_loading(False)
         self.update_states()
 
     def reset_view(self):
@@ -194,6 +200,7 @@ class InspectInterface(BaseScreen):
         self.request_id += 1
 
         self.reset_ui()
+        self.set_loading(False)
         self.update_states()
 
     def reset_ui(self):

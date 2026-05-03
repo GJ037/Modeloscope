@@ -46,36 +46,36 @@ class RenderInterface(BaseScreen):
         self.clear_button = ttk.Button(button_frame, text="🧹 Clear", width=15, command=self.clear)
         self.clear_button.pack(side="left", padx=20)
 
-        toggle_frame = ttk.LabelFrame(self.content, text="Render Modes")
-        toggle_frame.grid(row=1, column=0, pady=10)
+        mode_frame = ttk.LabelFrame(self.content, text="Render Modes")
+        mode_frame.grid(row=1, column=0, pady=10)
 
         self.flat_button = ttk.Radiobutton(
-            toggle_frame, text="Flat", variable=self.mode, value="flat", command=self.update_states
+            mode_frame, text="Flat", variable=self.mode, value="flat", command=self.update_states
         )
         self.flat_button.grid(row=0, column=0, padx=15)
 
         self.shaded_button = ttk.Radiobutton(
-            toggle_frame, text="Shaded", variable=self.mode, value="shaded", command=self.update_states
+            mode_frame, text="Shaded", variable=self.mode, value="shaded", command=self.update_states
         )
         self.shaded_button.grid(row=0, column=1, padx=15)
 
         self.wireframe_button = ttk.Radiobutton(
-            toggle_frame, text="Wireframe", variable=self.mode, value="wireframe", command=self.update_states
+            mode_frame, text="Wireframe", variable=self.mode, value="wireframe", command=self.update_states
         )
         self.wireframe_button.grid(row=0, column=2, padx=15)
 
         self.pointcloud_button = ttk.Radiobutton(
-            toggle_frame, text="Point Cloud", variable=self.mode, value="pointcloud", command=self.update_states
+            mode_frame, text="Point Cloud", variable=self.mode, value="pointcloud", command=self.update_states
         )
         self.pointcloud_button.grid(row=0, column=3, padx=15)
 
         self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
         self.viewer_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
+        self.viewer_frame.config(cursor="arrow")
 
-        self.add_footer_button(
-            "🏠 Return to Home",
-            lambda: self.controller.show_frame("HomeInterface")
-        )
+        self.set_footer("🏠 Return to Home", lambda: self.controller.show_frame("HomeInterface"))
+
+        self.apply_cursor(self)
 
     def on_enter(self):
         self.is_active = True
@@ -88,6 +88,7 @@ class RenderInterface(BaseScreen):
     def on_exit(self):
         self.request_id += 1
         self.is_active = False
+        self.set_loading(False)
 
         self.reset_ui()
 
@@ -142,6 +143,8 @@ class RenderInterface(BaseScreen):
             return
 
         self.is_loading = True
+        self.set_loading(True)
+
         self.request_id += 1
         current_id = self.request_id
         self.update_states()
@@ -160,6 +163,8 @@ class RenderInterface(BaseScreen):
 
         self.has_render = True
         self.is_loading = False
+
+        self.set_loading(False)
         self.update_states()
 
     def render_error(self, error, current_id):
@@ -169,6 +174,7 @@ class RenderInterface(BaseScreen):
         messagebox.showerror("Render Error", str(error))
 
         self.is_loading = False
+        self.set_loading(False)
         self.update_states()
 
     def reset_view(self):
@@ -186,6 +192,7 @@ class RenderInterface(BaseScreen):
         self.request_id += 1
 
         self.reset_ui()
+        self.set_loading(False)
         self.update_states()
     
     def reset_ui(self):

@@ -24,7 +24,7 @@ class AnalyzeInterface(BaseScreen):
         self.content.rowconfigure(2, weight=1)
 
         button_frame = ttk.Frame(self.content)
-        button_frame.grid(row=0, column=0, pady=15)
+        button_frame.grid(row=0, column=0, pady=10)
 
         self.browse_button = ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)
         self.browse_button.pack(side="left", padx=20)
@@ -72,24 +72,22 @@ class AnalyzeInterface(BaseScreen):
                         command=lambda: [self.update_toggle(), self.update_states()])
         self.performance_button.grid(row=0, column=5, padx=15)
 
-        output_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
-        output_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
+        report_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
+        report_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
 
-        output_frame.columnconfigure(0, weight=1)
-        output_frame.rowconfigure(0, weight=1)
+        report_frame.columnconfigure(0, weight=1)
+        report_frame.rowconfigure(0, weight=1)
 
-        self.console = tk.Text(output_frame, state="disabled", wrap="word", bg="#f7f7f7")
+        self.console = tk.Text(report_frame, state="disabled", wrap="word", bg="#f7f7f7")
         self.console.grid(row=0, column=0, sticky="nsew")
 
-        scrollbar = ttk.Scrollbar(output_frame, command=self.console.yview)
+        scrollbar = ttk.Scrollbar(report_frame, command=self.console.yview)
         scrollbar.grid(row=0, column=1, sticky="ns")
-
         self.console.config(yscrollcommand=scrollbar.set)
 
-        self.add_footer_button(
-            "🏠 Return to Home",
-            lambda: self.controller.show_frame("HomeInterface")
-        )
+        self.set_footer("🏠 Return to Home", lambda: self.controller.show_frame("HomeInterface"))
+
+        self.apply_cursor(self)
 
     def on_enter(self):
         self.is_active = True
@@ -98,6 +96,7 @@ class AnalyzeInterface(BaseScreen):
     def on_exit(self):
         self.request_id += 1
         self.is_active = False
+        self.set_loading(False)
 
         self.reset_ui()
         self.update_states()
@@ -207,6 +206,8 @@ class AnalyzeInterface(BaseScreen):
             return
 
         self.is_loading = True
+        self.set_loading(True)
+
         self.request_id += 1
         current_id = self.request_id
         self.update_states()
@@ -224,10 +225,12 @@ class AnalyzeInterface(BaseScreen):
             return
 
         self.display_report(report)
+
         self.last_report = report
         self.has_report = True
-
         self.is_loading = False
+
+        self.set_loading(False)
         self.update_states()
 
     def analysis_error(self, error, current_id):
@@ -237,6 +240,7 @@ class AnalyzeInterface(BaseScreen):
         messagebox.showerror("Analysis Error", str(error))
 
         self.is_loading = False
+        self.set_loading(False)
         self.update_states()
 
     def export_result(self):
@@ -280,6 +284,7 @@ class AnalyzeInterface(BaseScreen):
         self.request_id += 1
 
         self.reset_ui()
+        self.set_loading(False)
         self.update_states()
 
     def reset_ui(self):
