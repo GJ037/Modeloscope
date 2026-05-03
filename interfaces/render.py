@@ -98,7 +98,8 @@ class RenderInterface(BaseScreen):
         self.update_states()
 
     def update_states(self):
-        has_file = self.current_file is not None
+        has_file = self.current_file is not None and os.path.exists(self.current_file)
+
         has_mode = bool(self.mode.get())
         is_loading = self.is_loading
 
