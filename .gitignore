@@ -17,7 +17,6 @@ models/
 *.gltf
 
 # Root Files
-*.gitignore
-*.txt
-*.ico
-*.md
+requirements.txt
+README.md
+icon.ico
