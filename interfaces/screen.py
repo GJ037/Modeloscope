@@ -3,7 +3,7 @@ from tkinter import ttk
 
 class BaseScreen(ttk.Frame):
 
-    def __init__(self, parent, controller, title=""):
+    def __init__(self, parent, controller):
         super().__init__(parent)
 
         self.controller = controller
@@ -11,38 +11,24 @@ class BaseScreen(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
-        self._init_header(title)
-        self._init_content()
-        self._init_footer()
+        self._init_top_frame()
+        self._init_bottom_frame()
 
-    def _init_header(self, title):
-        if not title:
-            self.header = None
-            return
+    def _init_top_frame(self):
+        self.top_frame = ttk.Frame(self)
+        self.top_frame.grid(row=0, column=0, sticky="ew")
 
-        self.header = ttk.Frame(self)
-        self.header.grid(row=0, column=0, sticky="ew")
+        self.top_frame.columnconfigure(0, weight=1)
 
-        ttk.Label(self.header,text=title,
-            font=("Segoe UI", 28, "bold")).pack(pady=(50, 30))
+    def _init_bottom_frame(self):
+        self.bottom_frame = ttk.Frame(self)
+        self.bottom_frame.grid(row=1, column=0, sticky="nsew")
 
-    def _init_content(self):
-        self.content = ttk.Frame(self)
-        self.content.grid(row=1, column=0, sticky="nsew")
+        self.bottom_frame.columnconfigure(0, weight=1)
+        self.bottom_frame.rowconfigure(0, weight=1)
 
     def set_loading(self, active: bool):
-        if active:
-            self.controller.config(cursor="watch")
-        else:
-            self.controller.config(cursor="")
-
-    def _init_footer(self):
-        self.footer = ttk.Frame(self)
-        self.footer.grid(row=3, column=0, sticky="ew",padx=120, pady=10)
-
-    def set_footer(self, text, command):
-        ttk.Button(self.footer, text=text, width=30, command=command)\
-            .pack(pady=10)
+        self.controller.config(cursor="watch" if active else "")
 
     def apply_cursor(self, parent):
         stack = [parent]
@@ -51,8 +37,10 @@ class BaseScreen(ttk.Frame):
             widget = stack.pop()
 
             cls = widget.winfo_class()
-            if cls in ("TButton", "Button", "Checkbutton", "TCheckbutton",
-                    "Radiobutton", "TRadiobutton", "Scrollbar", "Text"):
+            if cls in (
+                "TButton", "Button", "Checkbutton", "TCheckbutton", 
+                "Radiobutton", "TRadiobutton", "Scrollbar", "Text"
+                ):
                 widget.config(cursor="arrow")
 
             stack.extend(widget.winfo_children())

@@ -5,26 +5,26 @@ class TaskManager:
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
         self.root = root
 
-    def submit(self, func, on_success=None, on_error=None):
+    def submit(self, func, success=None, failure=None):
         future = self.executor.submit(func)
 
         def callback(future):
             try:
                 result = future.result()
-                if on_success:
+                if success:
                     try:
-                        self.root.after(0, lambda: on_success(result))
+                        self.root.after(0, lambda r=result: success(r))
                     except RuntimeError:
                         pass
 
-            except Exception as e:
-                if on_error:
+            except Exception as error:
+                if failure:
                     try:
-                        self.root.after(0, lambda: on_error(e))
+                        self.root.after(0, lambda e=error: failure(e))
                     except RuntimeError:
                         pass
                 else:
-                    print("Unhandled task error:", e)
+                    print("Unhandled task error:", error)
 
         future.add_done_callback(callback)
         return future
