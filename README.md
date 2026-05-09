@@ -5,10 +5,21 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 
 ---
 
+<p align="center">
+  <img src="assets/icon.png" width="128">
+</p>
+
+<h1 align="center">Modeloscope</h1>
+
+<p align="center">
+  Interactive 3D Mesh Analysis and Inspection Tool
+</p>
+
+---
+
 ## 🚀 Features
 
 ### 🔍 Analysis Pipelne
-
 * Meta Data
 * Geometry analysis
 * Topology analysis
@@ -18,13 +29,11 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 * Export Report
 
 ### 🎨 3D Renderer
-
 * Interactive mesh visualization
 * Smooth camera controls (rotate, zoom, reset)
 * Efficient rendering pipeline using VisPy
 
 ### 🧪 Inspection Pipeline
-
 * Visual inspection of mesh structures
 * Highlighting of regions and features
 * Integrated with rendering system
@@ -45,7 +54,6 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 ## 🖥️ Installation
 
 ### Option 1: Run Prebuilt Executable
-
 1. Download the latest release
 2. Run:
 
@@ -53,20 +61,18 @@ It provides an integrated workflow combining **model analysis**, **interactive r
    Modeloscope_vX.X.exe
    ```
 
----
-
 ### Option 2: Run from Source
-
-```bash
-git clone https://github.com/your-username/modeloscope.git
-cd modeloscope
-
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-
-python launch.py
-```
+Run:
+   ```bash
+   git clone https://github.com/your-username/modeloscope.git
+   cd modeloscope
+   
+   python -m venv .venv
+   .venv\Scripts\activate
+   pip install -r requirements.txt
+   
+   python launch.py
+   ```
 
 ---
 
@@ -86,16 +92,16 @@ python launch.py
 
 Modeloscope is structured into modular systems:
 
-```
-Modeloscope/
-│
-├── cores/           # Core logic
-├── interfaces/      # UI interfaces
-├── analyzers/       # Analyzing Logics
-├── renderers/       # Rendering Logics
-├── inspectors/      # Inspection Logics
-└── launch.py        # Entry point
-```
+   ```
+   Modeloscope/
+   │
+   ├── cores/           # Core logic
+   ├── interfaces/      # UI interfaces
+   ├── analyzers/       # Analyzing Logics
+   ├── renderers/       # Rendering Logics
+   ├── inspectors/      # Inspection Logics
+   └── launch.py        # Entry point
+   ```
 
 ---
 
