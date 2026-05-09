@@ -8,13 +8,5 @@ __pycache__/
 # Project Versions
 versions/
 
-# Project Assets
-assets/
-
 # Test Models
 models/
-*.stl
-*.obj
-*.ply
-*.glb
-*.gltf
