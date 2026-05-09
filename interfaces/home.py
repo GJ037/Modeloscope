@@ -5,28 +5,29 @@ from tkinter import ttk
 class HomeInterface(BaseScreen):
 
     def __init__(self, parent, controller):
-        super().__init__(parent, controller, title="HOME")
+        super().__init__(parent, controller)
         self.build_content()
 
-
     def build_content(self):
-        self.content.columnconfigure(0, weight=1)
+        button_frame = ttk.Frame(self.bottom_frame)
+        button_frame.grid(row=0, column=0)
 
-        container = ttk.Frame(self.content)
-        container.pack(expand=True)
-
-        ttk.Button(container, text="🔍 Analyze Model", width=30,
+        ttk.Button(button_frame, text="🔍 Analyze Model", width=30,
             command=lambda: self.controller.show_frame("AnalyzeInterface")
         ).pack(pady=15)
 
-        ttk.Button(container, text="🎨 Render Model", width=30,
+        ttk.Button(button_frame, text="🎨 Render Model", width=30,
             command=lambda: self.controller.show_frame("RenderInterface")
         ).pack(pady=15)
 
-        ttk.Button(container, text="🧪 Inspect Model", width=30,
+        ttk.Button(button_frame, text="🧪 Inspect Model", width=30,
             command=lambda: self.controller.show_frame("InspectInterface")
         ).pack(pady=15)
 
-        self.set_footer("❌ Exit Application", self.controller.exit_app)
+        navigation_frame = ttk.Frame(self.bottom_frame)
+        navigation_frame.grid(row=1, column=0, pady=10)
+
+        ttk.Button(navigation_frame, text="❌ Exit Application", width=30,
+                   command=self.controller.exit_app).pack()
 
         self.apply_cursor(self)

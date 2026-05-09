@@ -8,7 +8,7 @@ from inspectors.runner import InspectRunner
 class InspectInterface(BaseScreen):
 
     def __init__(self, parent, controller):
-        super().__init__(parent, controller, title=None)
+        super().__init__(parent, controller)
         self.mode = tk.StringVar()
 
         self.engine = None
@@ -29,10 +29,7 @@ class InspectInterface(BaseScreen):
             self.runner = InspectRunner(self.engine)
 
     def build_content(self):
-        self.content.columnconfigure(0, weight=1)
-        self.content.rowconfigure(2, weight=1)
-
-        button_frame = ttk.Frame(self.content)
+        button_frame = ttk.Frame(self.top_frame)
         button_frame.grid(row=0, column=0, pady=15)
 
         self.browse_button = ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)
@@ -47,7 +44,7 @@ class InspectInterface(BaseScreen):
         self.clear_button = ttk.Button(button_frame, text="🧹 Clear", width=15, command=self.clear)
         self.clear_button.pack(side="left", padx=20)
 
-        mode_frame = ttk.LabelFrame(self.content, text="Inspect Modes")
+        mode_frame = ttk.LabelFrame(self.top_frame, text="Inspect Modes")
         mode_frame.grid(row=1, column=0, pady=10)
 
         self.boundary_button = ttk.Radiobutton(
@@ -75,11 +72,15 @@ class InspectInterface(BaseScreen):
         )
         self.flipped_normals_button.grid(row=0, column=4, padx=10)
 
-        self.viewer_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
-        self.viewer_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
+        self.viewer_frame = ttk.Frame(self.bottom_frame, borderwidth=2, relief="solid")
+        self.viewer_frame.grid(row=0, column=0, sticky="nsew", padx=120, pady=10)
         self.viewer_frame.config(cursor="arrow")
 
-        self.set_footer("🏠 Return to Home", lambda: self.controller.show_frame("HomeInterface"))
+        navigation_frame = ttk.Frame(self.bottom_frame)
+        navigation_frame.grid(row=1, column=0, pady=10)
+
+        ttk.Button(navigation_frame, text="🏠 Return to Home", width=30,
+                   command=lambda: self.controller.show_frame("HomeInterface")).pack()
 
         self.apply_cursor(self)
 
@@ -128,7 +129,7 @@ class InspectInterface(BaseScreen):
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
-            filetypes=[("3D Models", "*.stl *.obj *.ply")]
+            filetypes=[("3D Models", "*.stl *.obj *.ply *.gltf *.glb")]
         )
         if file_path:
             self.request_id += 1
@@ -159,8 +160,8 @@ class InspectInterface(BaseScreen):
 
         self.controller.task_manager.submit(
             func=lambda: self.runner.load(file_path, self.mode.get()),
-            on_success=lambda result: self.inspect_ready(result, current_id),
-            on_error=lambda error: self.inspect_error(error, current_id)
+            success=lambda result: self.inspect_ready(result, current_id),
+            failure=lambda error: self.inspect_error(error, current_id)
         )
 
     def inspect_ready(self, result, current_id):

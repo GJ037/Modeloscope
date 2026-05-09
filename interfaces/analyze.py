@@ -7,7 +7,7 @@ from analyzers.runner import AnalyzerRunner
 class AnalyzeInterface(BaseScreen):
 
     def __init__(self, parent, controller):
-        super().__init__(parent, controller, title=None)
+        super().__init__(parent, controller)
 
         self.current_file = None
         self.last_report = None
@@ -20,10 +20,7 @@ class AnalyzeInterface(BaseScreen):
         self.build_content()
 
     def build_content(self):
-        self.content.columnconfigure(0, weight=1)
-        self.content.rowconfigure(2, weight=1)
-
-        button_frame = ttk.Frame(self.content)
+        button_frame = ttk.Frame(self.top_frame)
         button_frame.grid(row=0, column=0, pady=10)
 
         self.browse_button = ttk.Button(button_frame, text="📁 Browse File", width=15, command=self.browse_file)
@@ -38,7 +35,7 @@ class AnalyzeInterface(BaseScreen):
         self.clear_button = ttk.Button(button_frame, text="🧹 Clear", width=15, command=self.clear)
         self.clear_button.pack(side="left", padx=20)
 
-        toggle_frame = ttk.LabelFrame(self.content, text="Analysis Modes")
+        toggle_frame = ttk.LabelFrame(self.top_frame, text="Analysis Modes")
         toggle_frame.grid(row=1, column=0, pady=10)
 
         self.toggle_var = tk.BooleanVar()
@@ -72,8 +69,8 @@ class AnalyzeInterface(BaseScreen):
                         command=lambda: [self.update_toggle(), self.update_states()])
         self.performance_button.grid(row=0, column=5, padx=15)
 
-        report_frame = ttk.Frame(self.content, borderwidth=2, relief="solid")
-        report_frame.grid(row=2, column=0, sticky="nsew", padx=120, pady=10)
+        report_frame = ttk.Frame(self.bottom_frame, borderwidth=2, relief="solid")
+        report_frame.grid(row=0, column=0, sticky="nsew", padx=120, pady=10)
 
         report_frame.columnconfigure(0, weight=1)
         report_frame.rowconfigure(0, weight=1)
@@ -85,7 +82,11 @@ class AnalyzeInterface(BaseScreen):
         scrollbar.grid(row=0, column=1, sticky="ns")
         self.console.config(yscrollcommand=scrollbar.set)
 
-        self.set_footer("🏠 Return to Home", lambda: self.controller.show_frame("HomeInterface"))
+        navigation_frame = ttk.Frame(self.bottom_frame)
+        navigation_frame.grid(row=1, column=0, pady=10)
+
+        ttk.Button(navigation_frame, text="🏠 Return to Home", width=30,
+                   command=lambda: self.controller.show_frame("HomeInterface")).pack()
 
         self.apply_cursor(self)
 
@@ -154,7 +155,7 @@ class AnalyzeInterface(BaseScreen):
     def browse_file(self):
         file_path = filedialog.askopenfilename(
             title="Select 3D File",
-            filetypes=[("3D Models", "*.stl *.obj *.ply")]
+            filetypes=[("3D Models", "*.stl *.obj *.ply *.gltf *.glb")]
         )
         if file_path:
             self.request_id += 1
@@ -216,8 +217,8 @@ class AnalyzeInterface(BaseScreen):
 
         self.controller.task_manager.submit(
             func=lambda: runner.analyze(file_path, modes),
-            on_success=lambda result: self.analysis_ready(result, current_id),
-            on_error=lambda error: self.analysis_error(error, current_id)
+            success=lambda result: self.analysis_ready(result, current_id),
+            failure=lambda error: self.analysis_error(error, current_id)
         )
 
     def analysis_ready(self, report, current_id):

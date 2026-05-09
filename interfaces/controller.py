@@ -17,15 +17,13 @@ class Controller(tk.Tk):
         self.geometry(size)
         self.minsize(1024, 768)
 
-        self.style = ttk.Style()
-        self.style.configure("TButton", font=("Segoe UI", 10), padding=5)
-        self.style.configure("TLabel", font=("Segoe UI", 10))
-
-        container = ttk.Frame(self)
-        container.grid(row=0, column=0, sticky="nsew")
+        self.set_style()
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
+
+        container = ttk.Frame(self)
+        container.grid(row=0, column=0, sticky="nsew")
 
         container.rowconfigure(0, weight=1)
         container.columnconfigure(0, weight=1)
@@ -39,6 +37,11 @@ class Controller(tk.Tk):
 
         else:
             self.title(self.base_title)
+
+    def set_style(self):
+        style = ttk.Style()
+        style.configure("TButton", font=("Segoe UI", 10), padding=5)
+        style.configure("TLabel", font=("Segoe UI", 10))
 
     def add_frame(self, name, frame_class):
         frame = frame_class(self.container, self)
@@ -58,7 +61,6 @@ class Controller(tk.Tk):
             new_frame.on_enter()
 
         new_frame.tkraise()
-        self.update_idletasks()
         self.current_frame = new_frame
 
     def exit_app(self):
