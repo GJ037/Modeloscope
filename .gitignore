@@ -13,6 +13,11 @@ models/
 *.stl
 *.obj
 *.ply
+*.glb
+*.gltf
 
-# Icon
+# Root Files
+*.gitignore
+*.txt
 *.ico
+*.md
