@@ -37,6 +37,8 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 * `.stl`
 * `.obj`
 * `.ply`
+* `.glb`
+* `.gltf`
 
 ---
 
@@ -72,11 +74,10 @@ python launch.py
 
 1. Launch the application
 2. Use different interfaces:
-
    * **Analyze** → compute metrics
    * **Render** → visualize mesh
    * **Inspect** → highlight features
-3. Load a 3D model (`.stl / .obj / .ply`)
+3. Load a 3D model (`.stl / .obj / .ply / .glb / .gltf`)
 4. **Analyze**, **Render** or **Inspect**
 
 ---
@@ -88,11 +89,11 @@ Modeloscope is structured into modular systems:
 ```
 Modeloscope/
 │
-├── cores/            # Core logic (rendering, analysis)
-├── interfaces/       # UI interfaces
+├── cores/           # Core logic
+├── interfaces/      # UI interfaces
 ├── analyzers/       # Analyzing Logics
-├── renderers/       # Rendering implementations
-├── inspectors/      # Inspection pipeline
+├── renderers/       # Rendering Logics
+├── inspectors/      # Inspection Logics
 └── launch.py        # Entry point
 ```
 
@@ -110,21 +111,24 @@ Modeloscope/
 
 ## 📈 Version Highlights
 
-### v3.4 (Latest)
+### v3.5 (Latest)
+* Screen Scaling
+* Screen Layout
+* Cursor Feedback
+* Updated Libraries
 
+### v3.4
 * Added Threading
 * Async Behaviour
 * Flow Changes
 
 ## v3.3
-
 * Changed Clear Button
 * Various Improvements
 * State Handling
 * Quality Additions
 
 ### v3.2
-
 * Added New Renderer
 * New Camera Movement
 * Exception Handeling
@@ -132,55 +136,36 @@ Modeloscope/
 * Quality Additions
 
 ## v3.1
-
 * Pipeline Standardization
 * Better Error Handling
 * Fixed Hidden Bugs
 
 ### v3.0
-
 * Introduced inspection pipeline
 * Visual mesh inspection system
 
 ### v2.2
-
 * Removed SciPy dependency
 * Reduced build size (~63MB → ~34MB)
 * Architectural Overhaul
 * Improved UI Experience
 
 ## v2.1
-
 * Changed Viewport Background
 * Improved Shaded Rendering
 * Improved Pointcloud rendering
 * Fixed Packaging Issues
 
 ### v2.0
-
 * Introduced 3D renderer
 
 ### v1.0
-
 * Initial release with analysis engine
-
----
-
-## 📊 Performance & Optimization
-
-* Lightweight executable (~34MB)
-* No unnecessary dependencies
-* Clean packaging with PyInstaller
-* Cross-system compatibility
 
 ---
 
 ## 👤 Author
 
-**Joel Sheno**
+**Joel Sheno G**
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License.
