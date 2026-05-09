@@ -1,21 +1,11 @@
-# 🧠 Modeloscope
+<div align="center">
+<img src="assets/icon.png" width="256">
+  
+# Modeloscope
+</div>
 
 **Modeloscope** is a project for analyzing, visualizing, and inspecting 3D models.
 It provides an integrated workflow combining **model analysis**, **interactive rendering**, and **visual inspection tools** in 3 different interfaces.
-
----
-
-<p align="center">
-  <img src="assets/icon.png" width="128">
-</p>
-
-<h1 align="center">Modeloscope</h1>
-
-<p align="center">
-  Interactive 3D Mesh Analysis and Inspection Tool
-</p>
-
----
 
 ## 🚀 Features
 
@@ -58,7 +48,7 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 2. Run:
 
    ```bash
-   Modeloscope_vX.X.exe
+   Modeloscope.exe
    ```
 
 ### Option 2: Run from Source
@@ -152,7 +142,7 @@ Modeloscope is structured into modular systems:
 
 ### v2.2
 * Removed SciPy dependency
-* Reduced build size (~63MB → ~34MB)
+* Reduced build size
 * Architectural Overhaul
 * Improved UI Experience
 
@@ -167,11 +157,5 @@ Modeloscope is structured into modular systems:
 
 ### v1.0
 * Initial release with analysis engine
-
----
-
-## 👤 Author
-
-**Joel Sheno G**
 
 ---
