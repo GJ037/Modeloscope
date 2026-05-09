@@ -15,8 +15,3 @@ models/
 *.ply
 *.glb
 *.gltf
-
-# Root Files
-requirements.txt
-README.md
-icon.ico
