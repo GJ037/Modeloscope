@@ -123,7 +123,7 @@ class InspectInterface(BaseScreen):
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
-            filetypes=[("3D Models", "*.stl *.obj *.ply *.gltf *.glb")]
+            filetypes=[("3D Models", "*.stl *.obj *.ply *.glb *.off")]
         )
         if file_path:
             self.request_id += 1

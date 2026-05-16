@@ -155,7 +155,7 @@ class AnalyzeInterface(BaseScreen):
     def browse_file(self):
         file_path = filedialog.askopenfilename(
             title="Select 3D File",
-            filetypes=[("3D Models", "*.stl *.obj *.ply *.gltf *.glb")]
+            filetypes=[("3D Models", "*.stl *.obj *.ply *.glb *.off")]
         )
         if file_path:
             self.request_id += 1

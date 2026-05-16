@@ -23,7 +23,7 @@ class AnalyzerRunner:
 
         report = {}
         context = {
-            "load_time": meta["load_time"]
+            "load_time": meta["load_time_sec"]
         }
 
         if "meta" in modes:
