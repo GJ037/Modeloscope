@@ -5,18 +5,6 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 
 ---
 
-<p align="center">
-  <img src="assets/icon.png" width="128">
-</p>
-
-<h1 align="center">Modeloscope</h1>
-
-<p align="center">
-  Interactive 3D Mesh Analysis and Inspection Tool
-</p>
-
----
-
 ## 🚀 Features
 
 ### 🔍 Analysis Pipelne
