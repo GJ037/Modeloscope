@@ -1,11 +1,9 @@
-<div align="center">
-<img src="assets/icon.png" width="256">
-  
-# Modeloscope
-</div>
+# 🧠 Modeloscope
 
 **Modeloscope** is a project for analyzing, visualizing, and inspecting 3D models.
 It provides an integrated workflow combining **model analysis**, **interactive rendering**, and **visual inspection tools** in 3 different interfaces.
+
+---
 
 ## 🚀 Features
 
