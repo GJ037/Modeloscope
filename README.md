@@ -46,7 +46,7 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 2. Run:
 
    ```bash
-   Modeloscope_vX.X.exe
+   Modeloscope.exe
    ```
 
 ### Option 2: Run from Source
@@ -140,7 +140,7 @@ Modeloscope is structured into modular systems:
 
 ### v2.2
 * Removed SciPy dependency
-* Reduced build size (~63MB → ~34MB)
+* Reduced build size
 * Architectural Overhaul
 * Improved UI Experience
 
@@ -155,11 +155,5 @@ Modeloscope is structured into modular systems:
 
 ### v1.0
 * Initial release with analysis engine
-
----
-
-## 👤 Author
-
-**Joel Sheno G**
 
 ---
