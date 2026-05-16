@@ -44,9 +44,9 @@ class ModelLoader:
 
             meta = {
                 "file_name": file_name,
-                "file_size_mb": round(file_size / (1024 * 1024), 3),
-                "geometry_count": geometry_count,
-                "load_time": round(load_time, 5),
+                "file_size_mb": round(file_size / (1024 * 1024), 5),
+                "load_time_sec": round(load_time, 5),
+                "geometry_count": geometry_count
             }
 
             return model, meta

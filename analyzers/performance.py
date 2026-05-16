@@ -24,5 +24,5 @@ class PerformanceAnalyzer:
         return {
             "memory_usage_mb": memory_use,
             "complexity_index": complexity_index,
-            "triangles_per_second": round(triangle_rate, 5),
+            "triangles_per_sec": round(triangle_rate, 5),
         }
