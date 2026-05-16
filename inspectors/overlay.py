@@ -19,11 +19,8 @@ class HeatmapOverlay:
         else:
             normalized = (values - vmin) / (vmax - vmin)
 
-        cmap = Colormap([
-            "navy", "blue",
-            "cyan", "lime",
-            "yellow", "red"
-        ])
+        cmap = Colormap(["navy", "blue", "cyan",
+                          "lime", "yellow", "red"])
 
         colors = cmap.map(normalized)
 
