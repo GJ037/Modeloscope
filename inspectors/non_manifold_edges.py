@@ -2,7 +2,7 @@ import numpy as np
 from collections import defaultdict
 
 
-class NonManifoldInspector:
+class NonManifoldEdgesInspector:
 
     def inspect(self, model):
         if model is None:

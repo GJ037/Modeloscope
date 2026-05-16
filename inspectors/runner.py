@@ -1,16 +1,14 @@
 from cores.loader import ModelLoader
-from overlays.heatmap import HeatmapOverlay
-from inspectors.boundary import BoundaryInspector
-from inspectors.non_manifold import NonManifoldInspector
+from inspectors.overlay import HeatmapOverlay
+from inspectors.boundary_edges import BoundaryEdgesInspector
+from inspectors.non_manifold_edges import NonManifoldEdgesInspector
 from inspectors.face_normals import FaceNormalsInspector
-from inspectors.vertex_normals import VertexNormalsInspector
 from inspectors.flipped_normals import FlippedNormalsInspector
 
 INSPECTORS = {
-    "boundary": BoundaryInspector,
-    "non_manifold": NonManifoldInspector,
+    "boundary_edges": BoundaryEdgesInspector,
+    "non_manifold_edges": NonManifoldEdgesInspector,
     "face_normals": FaceNormalsInspector,
-    "vertex_normals": VertexNormalsInspector,
     "flipped_normals": FlippedNormalsInspector
 }
 
@@ -24,11 +22,11 @@ class InspectRunner:
         if not file_path:
             raise ValueError("Invalid file path")
 
+        model, meta = ModelLoader().load(file_path)
+
         inspector_class = INSPECTORS.get(mode)
         if not inspector_class:
             raise ValueError(f"Unknown inspect mode: {mode}")
-
-        model, meta = ModelLoader().load(file_path)
 
         inspector = inspector_class()
         values = inspector.inspect(model)

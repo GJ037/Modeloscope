@@ -47,30 +47,25 @@ class InspectInterface(BaseScreen):
         mode_frame = ttk.LabelFrame(self.top_frame, text="Inspect Modes")
         mode_frame.grid(row=1, column=0, pady=10)
 
-        self.boundary_button = ttk.Radiobutton(
-            mode_frame, text="Boundary Edges", variable=self.mode, value="boundary", command=self.update_states
+        self.boundary_edges_button = ttk.Radiobutton(
+            mode_frame, text="Boundary Edges", variable=self.mode, value="boundary_edges", command=self.update_states
         )
-        self.boundary_button.grid(row=0, column=0, padx=10)
+        self.boundary_edges_button.grid(row=0, column=0, padx=10)
 
-        self.non_manifold_button = ttk.Radiobutton(
-            mode_frame, text="Non-Manifold Edges", variable=self.mode, value="non_manifold", command=self.update_states
+        self.non_manifold_edges_button = ttk.Radiobutton(
+            mode_frame, text="Non-Manifold Edges", variable=self.mode, value="non_manifold_edges", command=self.update_states
         )
-        self.non_manifold_button.grid(row=0, column=1, padx=10)
+        self.non_manifold_edges_button.grid(row=0, column=1, padx=10)
 
         self.face_normals_button = ttk.Radiobutton(
             mode_frame, text="Face Normals", variable=self.mode, value="face_normals", command=self.update_states
         )
         self.face_normals_button.grid(row=0, column=2, padx=10)
 
-        self.vertex_normals_button = ttk.Radiobutton(
-            mode_frame, text="Vertex Normals", variable=self.mode, value="vertex_normals", command=self.update_states
-        )
-        self.vertex_normals_button.grid(row=0, column=3, padx=10)
-
         self.flipped_normals_button = ttk.Radiobutton(
             mode_frame, text="Flipped Normals", variable=self.mode, value="flipped_normals", command=self.update_states
         )
-        self.flipped_normals_button.grid(row=0, column=4, padx=10)
+        self.flipped_normals_button.grid(row=0, column=3, padx=10)
 
         self.viewer_frame = ttk.Frame(self.bottom_frame, borderwidth=2, relief="solid")
         self.viewer_frame.grid(row=0, column=0, sticky="nsew", padx=120, pady=10)
@@ -114,10 +109,9 @@ class InspectInterface(BaseScreen):
         has_overlay = self.has_overlay
         has_anything = has_file or has_mode or has_render or has_overlay
 
-        self.boundary_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.non_manifold_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.boundary_edges_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.non_manifold_edges_button.config(state="normal" if (has_file and not is_loading) else "disabled")
         self.face_normals_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.vertex_normals_button.config(state="normal" if (has_file and not is_loading) else "disabled")
         self.flipped_normals_button.config(state="normal" if (has_file and not is_loading) else "disabled")
 
         self.browse_button.config(state="normal" if not is_loading else "disabled")
