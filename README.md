@@ -1,13 +1,12 @@
-# 🧠 Modeloscope
+# 🧠 **MODELOSCOPE**
 
 **Modeloscope** is a project for analyzing, visualizing, and inspecting 3D models.
-It provides an integrated workflow combining **model analysis**, **interactive rendering**, and **visual inspection tools** in 3 different interfaces.
+It provides an integrated workflow combining model analysis, interactive rendering, and **visual inspection** in 3 different interfaces.
+It is light weight, performance efficient and beginner friendly and supports file formats such as stl, obj, ply, glb and off.
 
----
+## 🚀 FEATURES
 
-## 🚀 Features
-
-### 🔍 Analysis Pipelne
+### 🔍 **Analysis**
 * Meta Data
 * Geometry analysis
 * Topology analysis
@@ -16,30 +15,28 @@ It provides an integrated workflow combining **model analysis**, **interactive r
 * Generate Rport
 * Export Report
 
-### 🎨 3D Renderer
+### 🎨 **Renderer**
 * Interactive mesh visualization
 * Smooth camera controls (rotate, zoom, reset)
 * Efficient rendering pipeline using VisPy
 
-### 🧪 Inspection Pipeline
+### 🧪 **Inspection**
 * Visual inspection of mesh structures
 * Highlighting of regions and features
 * Integrated with rendering system
 * Real-time overlay visualization
 
----
 
-## 📦 Supported Formats
+## 📦 SUPPORTED FORMATS
 
 * `.stl`
 * `.obj`
 * `.ply`
 * `.glb`
-* `.gltf`
+* `.off`
 
----
 
-## 🖥️ Installation
+## 🖥️ INSTALLATION METHODS
 
 ### Option 1: Run Prebuilt Executable
 1. Download the latest release
@@ -62,21 +59,19 @@ Run:
    python launch.py
    ```
 
----
 
-## 🧭 How to Use
+## 🧭 HOW TO USE
 
 1. Launch the application
 2. Use different interfaces:
    * **Analyze** → compute metrics
    * **Render** → visualize mesh
    * **Inspect** → highlight features
-3. Load a 3D model (`.stl / .obj / .ply / .glb / .gltf`)
+3. Load a 3D model (`.stl / .obj / .ply / .glb / .off`)
 4. **Analyze**, **Render** or **Inspect**
 
----
 
-## 🧱 Architecture Overview
+## 🧱 ARCHITECTURE OVERVIEW
 
 Modeloscope is structured into modular systems:
 
@@ -91,9 +86,8 @@ Modeloscope is structured into modular systems:
    └── launch.py        # Entry point
    ```
 
----
 
-## ⚙️ Tech Stack
+## ⚙️ TECH STACK
 
 * **Python 3.13**
 * **VisPy** – GPU-based rendering
@@ -101,9 +95,8 @@ Modeloscope is structured into modular systems:
 * **NumPy** – numerical computations
 * **Tkinter** – GUI
 
----
 
-## 📈 Version Highlights
+## 📈 VERSION HIGLIGHTS
 
 ### v3.5 (Latest)
 * Screen Scaling
@@ -155,5 +148,3 @@ Modeloscope is structured into modular systems:
 
 ### v1.0
 * Initial release with analysis engine
-
----
