@@ -17,7 +17,11 @@ class AnalyzeInterface(BaseScreen):
         self.is_active = False
 
         self.request_id = 0
+        self.timeout = 90000
+
         self.build_content()
+
+        self.runner = AnalyzerRunner()
 
     def build_content(self):
         button_frame = ttk.Frame(self.top_frame)
@@ -211,12 +215,12 @@ class AnalyzeInterface(BaseScreen):
 
         self.request_id += 1
         current_id = self.request_id
+
+        self.after(self.timeout, lambda rid=current_id: self.timeout_check(rid))
         self.update_states()
 
-        runner = AnalyzerRunner()
-
         self.controller.task_manager.submit(
-            func=lambda: runner.analyze(file_path, modes),
+            func=lambda: self.runner.analyze(file_path, modes),
             success=lambda result: self.analysis_ready(result, current_id),
             failure=lambda error: self.analysis_error(error, current_id)
         )
@@ -242,6 +246,21 @@ class AnalyzeInterface(BaseScreen):
 
         self.is_loading = False
         self.set_loading(False)
+        self.update_states()
+
+    def timeout_check(self, request_id):
+        if request_id != self.request_id:
+            return
+
+        if not self.is_loading:
+            return
+
+        self.request_id += 1
+        self.is_loading = False
+        self.set_loading(False)
+
+        messagebox.showerror("Analysis Timeout", "Analysis took too long and was cancelled.")
+
         self.update_states()
 
     def export_result(self):
