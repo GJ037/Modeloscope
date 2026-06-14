@@ -42,43 +42,42 @@ It is light weight, performance efficient and beginner friendly and supports fil
 1. Download the latest release
 2. Run:
 
-   ```bash
-   Modeloscope.exe
-   ```
+```bash
+Modeloscope.exe
+```
 
 ### Option 2: Run from Source
-Run:
+1. Run:
 
-   ```bash
-   git clone https://github.com/GJ037/Modeloscope.git
-   cd Modeloscope
-   
-   python -m venv venv
-   ```
+```bash
+git clone https://github.com/GJ037/Modeloscope.git
+cd Modeloscope   
+python -m venv venv
+```
 
-Activate virtual environment:
+2. Activate virtual environment:
 
-   **Windows**
-   ```bash
-   venv\Scripts\activate
-   ```
+**Windows**
+```bash
+venv\Scripts\activate
+```
 
-   **Linux / macOS**
-   ```bash
-   source venv/bin/activate
-   ```
+**Linux / macOS**
+```bash
+source venv/bin/activate
+```
 
-Install dependencies:
+3. Install dependencies:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-Run the application:
+4. Run the application:
 
-   ```bash
-   python launch.py
-   ```
+```bash
+python launch.py
+```
 
 
 ## 🧭 HOW TO USE
