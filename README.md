@@ -48,14 +48,35 @@ It is light weight, performance efficient and beginner friendly and supports fil
 
 ### Option 2: Run from Source
 Run:
+
    ```bash
    git clone https://github.com/GJ037/Modeloscope.git
-   cd modeloscope
+   cd Modeloscope
    
-   python -m venv .venv
-   .venv\Scripts\activate
+   python -m venv venv
+   ```
+
+Activate virtual environment:
+
+   **Windows**
+   ```bash
+   venv\Scripts\activate
+   ```
+
+   **Linux / macOS**
+   ```bash
+   source venv/bin/activate
+   ```
+
+Install dependencies:
+
+   ```bash
    pip install -r requirements.txt
-   
+   ```
+
+Run the application:
+
+   ```bash
    python launch.py
    ```
 
@@ -114,7 +135,7 @@ Modeloscope is structured into modular systems:
 * Async Behaviour
 * Flow Changes
 
-## v3.3
+### v3.3
 * Changed Clear Button
 * Various Improvements
 * State Handling
@@ -127,7 +148,7 @@ Modeloscope is structured into modular systems:
 * Fxied Hidden Bugs
 * Quality Additions
 
-## v3.1
+### v3.1
 * Pipeline Standardization
 * Better Error Handling
 * Fixed Hidden Bugs
@@ -142,7 +163,7 @@ Modeloscope is structured into modular systems:
 * Architectural Overhaul
 * Improved UI Experience
 
-## v2.1
+### v2.1
 * Changed Viewport Background
 * Improved Shaded Rendering
 * Improved Pointcloud rendering
