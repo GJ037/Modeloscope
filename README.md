@@ -49,7 +49,7 @@ It is light weight, performance efficient and beginner friendly and supports fil
 ### Option 2: Run from Source
 Run:
    ```bash
-   git clone https://github.com/your-username/modeloscope.git
+   git clone https://github.com/GJ037/Modeloscope.git
    cd modeloscope
    
    python -m venv .venv
@@ -98,7 +98,12 @@ Modeloscope is structured into modular systems:
 
 ## 📈 VERSION HIGLIGHTS
 
-### v3.5 (Latest)
+### v3.6 (Latest)
+* Overlay Loading
+* Altered Inspection Modes
+* Altered Model Support
+
+### v3.5
 * Screen Scaling
 * Screen Layout
 * Cursor Feedback
