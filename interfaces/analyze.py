@@ -1,7 +1,7 @@
 import os, json, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from interfaces.screen import BaseScreen
-from analyzers.runner import AnalyzerRunner
+from analyzers.runner import analyze
 
 
 class AnalyzeInterface(BaseScreen):
@@ -18,8 +18,6 @@ class AnalyzeInterface(BaseScreen):
         self.request_id = 0
 
         self.build_content()
-
-        self.runner = AnalyzerRunner()
 
     def build_content(self):
         button_frame = ttk.Frame(self.top_frame)
@@ -217,7 +215,7 @@ class AnalyzeInterface(BaseScreen):
         self.update_states()
 
         self.controller.task_manager.submit(
-            func=lambda: self.runner.analyze(file_path, modes),
+            func=lambda: analyze(file_path, modes),
             success=lambda result: self.analysis_ready(result, current_id),
             failure=lambda error: self.analysis_error(error, current_id)
         )

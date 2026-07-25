@@ -1,21 +1,19 @@
 from vispy import scene
 
 
-class PointCloudRenderer:
+def render_pointcloud(engine, model):
+    if model is None:
+        raise ValueError("Model is None")
 
-    def render(self, engine, model):
-        if model is None:
-            raise ValueError("Model is None")
+    points = scene.visuals.Markers()
 
-        points = scene.visuals.Markers()
-        
-        points.set_data(
-            model.vertices,
-            face_color="white",
-            edge_color=None,
-            size=2
-        )
+    points.set_data(
+        model.vertices,
+        face_color="white",
+        edge_color=None,
+        size=2
+    )
 
-        points.antialias = 0
+    points.antialias = 0
 
-        engine.add_visual(points)
+    engine.add_visual(points)
