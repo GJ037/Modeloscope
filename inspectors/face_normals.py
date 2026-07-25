@@ -1,30 +1,28 @@
 import numpy as np
 
 
-class FaceNormalsInspector:
+def inspect_face_normals(model):
+    if model is None:
+        raise ValueError("Model is None")
 
-    def inspect(self, model):
-        if model is None:
-            raise ValueError("Model is None")
+    faces = model.faces
+    vertices = model.vertices
+    
+    values = np.zeros(len(vertices))
 
-        vertices = model.vertices
-        faces = model.faces
+    for v0, v1, v2 in faces:
+        p0 = vertices[v0]
+        p1 = vertices[v1]
+        p2 = vertices[v2]
 
-        values = np.zeros(len(vertices))
+        normal = np.cross(p1 - p0, p2 - p0)
+        normalize = np.linalg.norm(normal)
 
-        for v0, v1, v2 in faces:
-            p0 = vertices[v0]
-            p1 = vertices[v1]
-            p2 = vertices[v2]
+        if normalize == 0:
+            continue
 
-            normal = np.cross(p1 - p0, p2 - p0)
-            normalize = np.linalg.norm(normal)
+        values[v0] += normalize
+        values[v1] += normalize
+        values[v2] += normalize
 
-            if normalize == 0:
-                continue
-
-            values[v0] += normalize
-            values[v1] += normalize
-            values[v2] += normalize
-
-        return values
+    return values

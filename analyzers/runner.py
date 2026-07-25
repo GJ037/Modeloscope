@@ -1,37 +1,29 @@
-from cores.loader import ModelLoader
-from analyzers.geometry import GeometryAnalyzer
-from analyzers.topology import TopologyAnalyzer
-from analyzers.quality import QualityAnalyzer
-from analyzers.performance import PerformanceAnalyzer
+from cores.loader import load
+from analyzers.topology import analyze_topology
+from analyzers.geometry import analyze_geometry
+from analyzers.quality import analyze_quality
+from analyzers.performance import analyze_performance
 
 ANALYZERS = {
-    "geometry": GeometryAnalyzer,
-    "topology": TopologyAnalyzer,
-    "quality": QualityAnalyzer,
-    "performance": PerformanceAnalyzer
+    "topology": analyze_topology,
+    "geometry": analyze_geometry,
+    "quality": analyze_quality,
+    "performance": analyze_performance
 }
 
 
-class AnalyzerRunner:
+def analyze(file_path, modes):
+    if not file_path:
+        raise ValueError("Invalid file path")
 
-    def analyze(self, file_path, modes):
-        if not file_path:
-            raise ValueError("Invalid file path")
+    model, meta = load(file_path)
+    report, context = {}, {"load_time": meta["load_time_sec"]}
 
-        loader = ModelLoader()
-        model, meta = loader.load(file_path)
+    if "meta" in modes:
+        report["meta"] = meta
 
-        report = {}
-        context = {
-            "load_time": meta["load_time_sec"]
-        }
+    for mode in modes:
+        if mode in ANALYZERS:
+             report[mode] = ANALYZERS[mode](model, context)
 
-        if "meta" in modes:
-            report["meta"] = meta
-
-        for mode in modes:
-            if mode in ANALYZERS:
-                analyzer = ANALYZERS[mode]()
-                report[mode] = analyzer.analyze(model, context)
-
-        return report
+    return report

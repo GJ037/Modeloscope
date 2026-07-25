@@ -1,37 +1,35 @@
 import numpy as np
 
 
-class FlippedNormalsInspector:
+def inspect_flipped_normals(model):
+    if model is None:
+        raise ValueError("Model is None")
 
-    def inspect(self, model):
-        if model is None:
-            raise ValueError("Model is None")
+    faces = model.faces
+    vertices = model.vertices
 
-        vertices = model.vertices
-        faces = model.faces
+    mesh_center = np.mean(vertices, axis=0)
+    values = np.zeros(len(vertices))
 
-        mesh_center = np.mean(vertices, axis=0)
-        values = np.zeros(len(vertices))
+    for v0, v1, v2 in faces:
+        p0 = vertices[v0]
+        p1 = vertices[v1]
+        p2 = vertices[v2]
 
-        for v0, v1, v2 in faces:
-            p0 = vertices[v0]
-            p1 = vertices[v1]
-            p2 = vertices[v2]
+        normal = np.cross(p1 - p0, p2 - p0)
+        normalize = np.linalg.norm(normal)
 
-            normal = np.cross(p1 - p0, p2 - p0)
-            normalize = np.linalg.norm(normal)
+        if normalize == 0:
+            continue
 
-            if normalize == 0:
-                continue
+        normal /= normalize
 
-            normal /= normalize
+        center = (p0 + p1 + p2) / 3
+        direction = center - mesh_center
 
-            center = (p0 + p1 + p2) / 3
-            direction = center - mesh_center
+        if np.dot(normal, direction) < 0:
+            values[v0] += 1
+            values[v1] += 1
+            values[v2] += 1
 
-            if np.dot(normal, direction) < 0:
-                values[v0] += 1
-                values[v1] += 1
-                values[v2] += 1
-
-        return values
+    return values

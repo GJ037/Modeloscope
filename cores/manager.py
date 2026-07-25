@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 
 class TaskManager:
+    
     def __init__(self, root, max_workers=4):
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
         self.root = root
