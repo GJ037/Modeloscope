@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from cores.manager import TaskManager
+from functions.manager import TaskManager
 
 
 class Controller(tk.Tk):

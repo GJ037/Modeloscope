@@ -1,10 +1,10 @@
 import os, json, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from interfaces.screen import BaseScreen
+from interfaces.screen import Screen
 from analyzers.runner import analyze
 
 
-class AnalyzeInterface(BaseScreen):
+class AnalyzeInterface(Screen):
 
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
@@ -29,45 +29,11 @@ class AnalyzeInterface(BaseScreen):
         self.run_button = ttk.Button(button_frame, text="📄 Run Analysis", width=15, command=self.run_analysis)
         self.run_button.pack(side="left", padx=20)
 
-        self.export_button = ttk.Button(button_frame, text="💾 Export Result", width=15, command=self.export_result)
+        self.export_button = ttk.Button(button_frame, text="💾 Export Report", width=15, command=self.export_report)
         self.export_button.pack(side="left", padx=20)
 
         self.clear_button = ttk.Button(button_frame, text="🧹 Clear", width=15, command=self.clear)
         self.clear_button.pack(side="left", padx=20)
-
-        toggle_frame = ttk.LabelFrame(self.top_frame, text="Analysis Modes")
-        toggle_frame.grid(row=1, column=0, pady=10)
-
-        self.toggle_var = tk.BooleanVar()
-        self.meta_var = tk.BooleanVar()
-        self.geometry_var = tk.BooleanVar()
-        self.topology_var = tk.BooleanVar()
-        self.quality_var = tk.BooleanVar()
-        self.performance_var = tk.BooleanVar()
-
-        self.toggle_button = ttk.Checkbutton(toggle_frame, text="All/None", variable=self.toggle_var, 
-                        command=lambda: [self.handle_toggle(), self.update_states()])
-        self.toggle_button.grid(row=0, column=0, padx=15)
-
-        self.meta_button = ttk.Checkbutton(toggle_frame, text="Meta", variable=self.meta_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])
-        self.meta_button.grid(row=0, column=1, padx=15)
-
-        self.topology_button = ttk.Checkbutton(toggle_frame, text="Topology", variable=self.topology_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])
-        self.topology_button.grid(row=0, column=2, padx=15)
-
-        self.geometry_button = ttk.Checkbutton(toggle_frame, text="Geometry", variable=self.geometry_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])
-        self.geometry_button.grid(row=0, column=3, padx=15)
-
-        self.quality_button = ttk.Checkbutton(toggle_frame, text="Quality", variable=self.quality_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])
-        self.quality_button.grid(row=0, column=4, padx=15)
-
-        self.performance_button = ttk.Checkbutton(toggle_frame, text="Performance", variable=self.performance_var, 
-                        command=lambda: [self.update_toggle(), self.update_states()])
-        self.performance_button.grid(row=0, column=5, padx=15)
 
         report_frame = ttk.Frame(self.bottom_frame, borderwidth=2, relief="solid")
         report_frame.grid(row=0, column=0, sticky="nsew", padx=120, pady=10)
@@ -102,60 +68,21 @@ class AnalyzeInterface(BaseScreen):
         self.reset_ui()
         self.update_states()
 
-    def handle_toggle(self):
-        state = self.toggle_var.get()
-
-        self.meta_var.set(state)
-        self.topology_var.set(state)
-        self.geometry_var.set(state)
-        self.quality_var.set(state)
-        self.performance_var.set(state)
-
-    def update_toggle(self):
-        all_modes = (
-            self.meta_var.get() and
-            self.topology_var.get() and
-            self.geometry_var.get() and
-            self.quality_var.get() and
-            self.performance_var.get()
-        )
-
-        self.toggle_var.set(all_modes)
-
     def update_states(self):
+        is_loading = self.is_loading
         has_file = self.current_file is not None and os.path.exists(self.current_file)
 
-        has_modes = (
-            self.meta_var.get() or
-            self.topology_var.get() or
-            self.geometry_var.get() or
-            self.quality_var.get() or
-            self.performance_var.get()
-        )
-
-        is_loading = self.is_loading
-
         has_report = self.has_report
-        has_anything = has_file or has_modes or has_report
-
-        self.toggle_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.meta_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.geometry_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.topology_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.quality_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.performance_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        has_anything = has_file or has_report
 
         self.browse_button.config(state="normal" if not is_loading else "disabled")
-        self.run_button.config(
-            state="normal" if (has_file and has_modes and not is_loading) else "disabled"
-        )
+        self.run_button.config(state="normal" if (has_file and not is_loading) else "disabled")
         self.export_button.config(state="normal" if has_report else "disabled")
         self.clear_button.config(state="normal" if has_anything else "disabled")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
-            title="Select 3D File",
-            filetypes=[("3D Models", "*.stl *.obj *.ply *.glb *.off")]
+            filetypes=[("Supported Formats", "*.stl *.off *.ply *.obj *.gltf *.glb")]
         )
         if file_path:
             self.request_id += 1
@@ -167,21 +94,21 @@ class AnalyzeInterface(BaseScreen):
             self.controller.set_title(file_name)
             self.update_states()
 
-    def display_report(self, report):
+    def display_report(self, grouped_features):
         self.console.config(state="normal")
         self.console.delete("1.0", tk.END)
 
-        self.console.tag_configure("section", font=("Segoe UI", 11, "bold"))
+        self.console.tag_configure("section", font=("Segoe UI", 12, "bold"))
         self.console.tag_configure("metric", font=("Consolas", 10))
 
-        for section, data in report.items():
+        for section, data in grouped_features.items():
             self.console.insert(tk.END, f"{section.upper()}\n", "section")
-            self.console.insert(tk.END, "=" * 50 + "\n\n", "section")
+            self.console.insert(tk.END, "=" * 64 + "\n\n", "section")
 
             if isinstance(data, dict):
                 for key, value in data.items():
                     formatted_key = key.replace("_", " ").title()
-                    line = f"{formatted_key:<25} : {value}\n"
+                    line = f"{formatted_key:<32} : {value}\n"
                     self.console.insert(tk.END, line, "metric")
 
             self.console.insert(tk.END, "\n\n")
@@ -192,20 +119,9 @@ class AnalyzeInterface(BaseScreen):
         file_path = self.current_file
 
         if not file_path or not os.path.exists(file_path):
-            messagebox.showerror("Invalid File", "Please select a valid 3D model.")
+            messagebox.showerror("Invalid File", "File does not exist.")
             return
-
-        modes = []
-        if self.meta_var.get(): modes.append("meta")
-        if self.topology_var.get(): modes.append("topology")
-        if self.geometry_var.get(): modes.append("geometry")
-        if self.quality_var.get(): modes.append("quality")
-        if self.performance_var.get(): modes.append("performance")
-
-        if not modes:
-            messagebox.showwarning("No Mode Selected", "Select an analysis mode.")
-            return
-
+        
         self.is_loading = True
         self.set_loading(True)
 
@@ -215,18 +131,18 @@ class AnalyzeInterface(BaseScreen):
         self.update_states()
 
         self.controller.task_manager.submit(
-            func=lambda: analyze(file_path, modes),
+            func=lambda: analyze(file_path),
             success=lambda result: self.analysis_ready(result, current_id),
             failure=lambda error: self.analysis_error(error, current_id)
         )
 
-    def analysis_ready(self, report, current_id):
+    def analysis_ready(self, grouped_features, current_id):
         if not self.is_active or current_id != self.request_id:
             return
 
-        self.display_report(report)
+        self.display_report(grouped_features)
 
-        self.last_report = report
+        self.last_report = grouped_features
         self.has_report = True
         self.is_loading = False
 
@@ -243,17 +159,9 @@ class AnalyzeInterface(BaseScreen):
         self.set_loading(False)
         self.update_states()
 
-    def export_result(self):
-        if not self.last_report:
-            messagebox.showwarning("Export Error", "No report available to export.")
-            return
-
+    def export_report(self):
         file_path = filedialog.asksaveasfilename(
-            defaultextension=".txt",
-            filetypes=[
-                ("Text File", "*.txt"),
-                ("JSON File", "*.json")
-           ]
+            filetypes=[("Text File", "*.txt"), ("JSON File", "*.json")]
         )
 
         if not file_path:
@@ -268,9 +176,7 @@ class AnalyzeInterface(BaseScreen):
         else:
             with open(file_path, "w") as f:
                 for section, data in self.last_report.items():
-
                     f.write(f"{section.upper()}\n")
-                    f.write("=" * 50 + "\n")
 
                     if isinstance(data, dict):
                         for key, value in data.items():
@@ -289,13 +195,6 @@ class AnalyzeInterface(BaseScreen):
 
     def reset_ui(self):
         self.controller.set_title()
-
-        self.toggle_var.set(False)
-        self.meta_var.set(False)
-        self.topology_var.set(False)
-        self.geometry_var.set(False)
-        self.quality_var.set(False)
-        self.performance_var.set(False)
 
         self.console.config(state="normal")
         self.console.delete("1.0", tk.END)

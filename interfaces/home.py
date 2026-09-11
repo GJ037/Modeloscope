@@ -1,8 +1,8 @@
-from interfaces.screen import BaseScreen
+from interfaces.screen import Screen
 from tkinter import ttk
 
 
-class HomeInterface(BaseScreen):
+class HomeInterface(Screen):
 
     def __init__(self, parent, controller):
         super().__init__(parent, controller)

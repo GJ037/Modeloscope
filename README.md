@@ -1,80 +1,84 @@
 # 🧠 **MODELOSCOPE**
 
-**Modeloscope** is a project for analyzing, visualizing, and inspecting 3D models.
-It provides an integrated workflow combining model analysis, interactive rendering, and **visual inspection** in 3 different interfaces.
-It is light weight, performance efficient and beginner friendly and supports file formats such as stl, obj, ply, glb and off.
+**Modeloscope** is a project for analyzing, visualizing, and inspecting 3D meshes.
+It is light weight, performance efficient and beginner friendly and supports file formats such as `.stl`, `.off`, `.ply`, `obj`, `.gltf` and `.glb`.
+
 
 ## 🚀 FEATURES
 
-### 🔍 **Analysis**
-* Meta Data
-* Geometry analysis
+### 🔍 **Analyzers**
 * Topology analysis
-* Quality metrics
-* Performance metrics
-* Generate Rport
-* Export Report
+* Geometry analysis
+* Statistics metrics
+* Distributions metrics
+* Integrity metrics
 
-### 🎨 **Renderer**
-* Interactive mesh visualization
+### 🎨 **Renderers**
+* Flat render
+* Shaded render
+* Wireframe render
+* Pointcloud render
+
+### 🧪 **Inspectors**
+* Boundary edges inspection
+* Non manifold edges inspection
+* Face normals inspection
+* Flipped normals inspection
+
+### ❤ **Enhancements**
+* Generate and Export analysis report
+* Custom rendering pipeline using VisPy
 * Smooth camera controls (rotate, zoom, reset)
-* Efficient rendering pipeline using VisPy
-
-### 🧪 **Inspection**
-* Visual inspection of mesh structures
-* Highlighting of regions and features
-* Integrated with rendering system
-* Real-time overlay visualization
+* Highlight overlay regions on inspection
 
 
-## 📦 SUPPORTED FORMATS
+## 🧱 ARCHITECTURE OVERVIEW
 
-* `.stl`
-* `.obj`
-* `.ply`
-* `.glb`
-* `.off`
+   ```
+   Modeloscope/
+   │
+   ├── functions/       # Functional logics
+   ├── interfaces/      # Interfaces logics
+   ├── analyzers/       # Analyzing logics
+   ├── renderers/       # Rendering logics
+   ├── inspectors/      # Inspection logics
+   └── launch.py        # Entry point
+   ```
 
 
 ## 🖥️ INSTALLATION METHODS
 
 ### Option 1: Run Prebuilt Executable
 1. Download the latest release
-2. Run:
 
+2. Run:
 ```bash
 Modeloscope.exe
 ```
 
 ### Option 2: Run from Source
-1. Run:
-
+1. Clone the repository:
 ```bash
-git clone https://github.com/GJ037/Modeloscope.git
+git clone https://github.com/GJO37/Modeloscope.git
 cd Modeloscope   
+```
+
+2. Create virtual environment:
+```bash
 python -m venv venv
 ```
 
-2. Activate virtual environment:
-
-**Windows**
+3. Activate virtual environment:
 ```bash
 venv\Scripts\activate
 ```
 
-**Linux / macOS**
-```bash
-source venv/bin/activate
-```
-
-3. Install dependencies:
-
+4. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Run the application:
-
+5. Run the application:
 ```bash
 python launch.py
 ```
@@ -83,37 +87,24 @@ python launch.py
 ## 🧭 HOW TO USE
 
 1. Launch the application
+
 2. Use different interfaces:
    * **Analyze** → compute metrics
    * **Render** → visualize mesh
    * **Inspect** → highlight features
-3. Load a 3D model (`.stl / .obj / .ply / .glb / .off`)
+
+3. Load an 3D mesh 
+
 4. **Analyze**, **Render** or **Inspect**
-
-
-## 🧱 ARCHITECTURE OVERVIEW
-
-Modeloscope is structured into modular systems:
-
-   ```
-   Modeloscope/
-   │
-   ├── cores/           # Core logic
-   ├── interfaces/      # UI interfaces
-   ├── analyzers/       # Analyzing Logics
-   ├── renderers/       # Rendering Logics
-   ├── inspectors/      # Inspection Logics
-   └── launch.py        # Entry point
-   ```
 
 
 ## ⚙️ TECH STACK
 
 * **Python 3.13**
-* **VisPy** – GPU-based rendering
-* **Trimesh** – mesh processing
-* **NumPy** – numerical computations
-* **Tkinter** – GUI
+* **NumPy**   – Numerical computations
+* **Trimesh** – Mesh processing
+* **VisPy**   – GPU-based rendering
+* **Tkinter** – User interface
 
 
 ## 📈 VERSION HIGLIGHTS

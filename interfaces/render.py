@@ -1,18 +1,17 @@
 import os, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from cores.engine import RenderEngine
-from interfaces.screen import BaseScreen
-from renderers.runner import RenderRunner
+from functions.engine import RenderEngine
+from interfaces.screen import Screen
+from renderers.runner import load, render
 
 
-class RenderInterface(BaseScreen):
+class RenderInterface(Screen):
 
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         self.mode = tk.StringVar()
 
         self.engine = None
-        self.runner = None
         self.current_file = None
 
         self.has_render = False
@@ -25,7 +24,6 @@ class RenderInterface(BaseScreen):
         if self.engine is None:
             self.engine = RenderEngine()
             self.engine.initialize(self.viewer_frame)
-            self.runner = RenderRunner(self.engine)
 
     def build_content(self):
         button_frame = ttk.Frame(self.top_frame)
@@ -99,11 +97,10 @@ class RenderInterface(BaseScreen):
         self.update_states()
 
     def update_states(self):
+        is_loading = self.is_loading
         has_file = self.current_file is not None and os.path.exists(self.current_file)
 
         has_mode = bool(self.mode.get())
-        is_loading = self.is_loading
-
         has_render = self.has_render
         has_anything = has_file or has_mode or has_render
 
@@ -113,15 +110,13 @@ class RenderInterface(BaseScreen):
         self.pointcloud_button.config(state="normal" if (has_file and not is_loading) else "disabled")
 
         self.browse_button.config(state="normal" if not is_loading else "disabled")
-        self.render_button.config(
-            state="normal" if (has_file and has_mode and not is_loading) else "disabled"
-        )
+        self.render_button.config(state="normal" if (has_file and has_mode and not is_loading) else "disabled")
         self.reset_button.config(state="normal" if has_render else "disabled")
         self.clear_button.config(state="normal" if has_anything else "disabled")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(
-            filetypes=[("3D Models", "*.stl *.obj *.ply *.glb *off")]
+            filetypes=[("Supported Formats", "*.stl *.off *.ply *.obj *.gltf *.glb")]
         )
         if file_path:
             self.request_id += 1
@@ -137,13 +132,9 @@ class RenderInterface(BaseScreen):
         file_path = self.current_file
 
         if not file_path or not os.path.exists(file_path):
-            messagebox.showerror("Invalid File", "Please select a valid 3D model.")
+            messagebox.showerror("Invalid File", "File does not exist.")
             return
-
-        if not self.mode.get():
-            messagebox.showwarning("No Mode Selected", "Select a render mode.")
-            return
-
+        
         self.is_loading = True
         self.set_loading(True)
 
@@ -153,7 +144,7 @@ class RenderInterface(BaseScreen):
         self.update_states()
 
         self.controller.task_manager.submit(
-            func=lambda: self.runner.load(file_path, self.mode.get()),
+            func=lambda: load(file_path, self.mode.get()),
             success=lambda result: self.render_ready(result, current_id),
             failure=lambda error: self.render_error(error, current_id)
         )
@@ -162,7 +153,7 @@ class RenderInterface(BaseScreen):
         if not self.is_active or current_id != self.request_id:
             return
         
-        self.runner.render(*result)
+        render(self.engine, *result)
 
         self.has_render = True
         self.is_loading = False
@@ -182,10 +173,6 @@ class RenderInterface(BaseScreen):
 
     def reset_view(self):
         if not self.engine:
-            return
-
-        if not self.has_render:
-            messagebox.showwarning("No Model Rendered", "Render a model first.")
             return
         
         self.engine.reset_view()

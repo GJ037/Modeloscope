@@ -1,7 +1,7 @@
 from tkinter import ttk
 
 
-class BaseScreen(ttk.Frame):
+class Screen(ttk.Frame):
 
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -37,10 +37,8 @@ class BaseScreen(ttk.Frame):
             widget = stack.pop()
 
             cls = widget.winfo_class()
-            if cls in (
-                "TButton", "Button", "Checkbutton", "TCheckbutton", 
-                "Radiobutton", "TRadiobutton", "Scrollbar", "Text"
-                ):
+            if cls in ("TButton", "Button", "Checkbutton", "TCheckbutton", 
+                "Radiobutton", "TRadiobutton", "Scrollbar", "Text"):
                 widget.config(cursor="arrow")
 
             stack.extend(widget.winfo_children())

@@ -1,29 +1,20 @@
-from cores.loader import load
-from analyzers.topology import analyze_topology
-from analyzers.geometry import analyze_geometry
-from analyzers.quality import analyze_quality
-from analyzers.performance import analyze_performance
-
-ANALYZERS = {
-    "topology": analyze_topology,
-    "geometry": analyze_geometry,
-    "quality": analyze_quality,
-    "performance": analyze_performance
-}
+from functions.loader import load_mesh
+from functions.grouper import group_features
+from analyzers.node import analyze_node
+from analyzers.edge import analyze_edge
+from analyzers.mesh import analyze_mesh
 
 
-def analyze(file_path, modes):
+def analyze(file_path: str):
     if not file_path:
         raise ValueError("Invalid file path")
 
-    model, meta = load(file_path)
-    report, context = {}, {"load_time": meta["load_time_sec"]}
+    mesh = load_mesh(file_path)
 
-    if "meta" in modes:
-        report["meta"] = meta
+    node_features = analyze_node(mesh)
+    edge_features = analyze_edge(mesh)
+    mesh_features = analyze_mesh(mesh)
 
-    for mode in modes:
-        if mode in ANALYZERS:
-             report[mode] = ANALYZERS[mode](model, context)
+    grouped_features = group_features(node_features, edge_features, mesh_features)
 
-    return report
+    return grouped_features

@@ -1,5 +1,4 @@
 from vispy import app, scene
-
 app.use_app("tkinter")
 
 
@@ -16,12 +15,7 @@ class RenderEngine:
         if parent is None:
             raise ValueError("Parent frame is required")
 
-        self.canvas = scene.SceneCanvas(
-            keys="interactive",
-            bgcolor="gray",
-            parent=parent
-        )
-
+        self.canvas = scene.SceneCanvas(keys="interactive", bgcolor="gray", parent=parent)
         self.canvas.native.pack(fill="both", expand=True)
 
         self.view = self.canvas.central_widget.add_view()
@@ -73,6 +67,7 @@ class RenderEngine:
 
         if self.visuals:
             self.fit_camera()
+
         else:
             self.center_camera()
 

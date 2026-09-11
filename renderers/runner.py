@@ -1,38 +1,34 @@
-from cores.loader import load
+from functions.loader import load_mesh
 from renderers.flat import render_flat
 from renderers.shaded import render_shaded
 from renderers.wireframe import render_wireframe
 from renderers.pointcloud import render_pointcloud
 
-RENDERERS = {
-    "flat": render_flat,
-    "shaded": render_shaded,
-    "wireframe": render_wireframe,
-    "pointcloud": render_pointcloud
-}
 
+def load(file_path, mode):
+    if not file_path:
+        raise ValueError("Invalid file path")
 
-class RenderRunner:
-    
-    def __init__(self, engine):
-        self.engine = engine
+    mesh = load_mesh(file_path)
 
-    def load(self, file_path, mode):
-        if not file_path:
-            raise ValueError("Invalid file path")
-
-        model, meta = load(file_path)
-        renderer = RENDERERS.get(mode)
+    match mode:
+        case "flat":
+            renderer = render_flat
+        case "shaded":
+            renderer = render_shaded
+        case "wireframe":
+            renderer = render_wireframe
+        case "pointcloud":
+            renderer = render_pointcloud
+        case _:
+            raise ValueError(f"Unknown mode: {mode}")
         
-        if not renderer:
-            raise ValueError(f"Unknown render mode: {mode}")
-        
-        return model, renderer
+    return mesh, renderer
     
-    def render(self, model, renderer):
-        self.engine.clear_all()
+def render(engine, mesh, renderer):
+    engine.clear_all()
 
-        renderer(self.engine, model)
+    renderer(engine, mesh)
 
-        self.engine.reset_view()
-        self.engine.set_axis(False)
+    engine.reset_view()
+    engine.set_axis(False)
