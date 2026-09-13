@@ -50,15 +50,15 @@ class InspectInterface(Screen):
         )
         self.duplicate_vertices_button.grid(row=0, column=0, padx=10)
 
-        self.sharp_edges_button = ttk.Radiobutton(
-            mode_frame, text="Sharp Edges", variable=self.mode, value="sharp_edges", command=self.update_states
-        )
-        self.sharp_edges_button.grid(row=0, column=1, padx=10)
-
         self.non_manifold_edges_button = ttk.Radiobutton(
             mode_frame, text="Non-Manifold Edges", variable=self.mode, value="non_manifold_edges", command=self.update_states
         )
-        self.non_manifold_edges_button.grid(row=0, column=2, padx=10)
+        self.non_manifold_edges_button.grid(row=0, column=1, padx=10)
+
+        self.sharp_edges_button = ttk.Radiobutton(
+            mode_frame, text="Sharp Edges", variable=self.mode, value="sharp_edges", command=self.update_states
+        )
+        self.sharp_edges_button.grid(row=0, column=2, padx=10)
 
         self.degenerate_faces_button = ttk.Radiobutton(
             mode_frame, text="Degenerate Faces", variable=self.mode, value="degenerate_faces", command=self.update_states
@@ -112,8 +112,8 @@ class InspectInterface(Screen):
         has_anything = has_file or has_mode or has_render or has_overlay
 
         self.duplicate_vertices_button.config(state="normal" if (has_file and not is_loading) else "disabled")
-        self.sharp_edges_button.config(state="normal" if (has_file and not is_loading) else "disabled")
         self.non_manifold_edges_button.config(state="normal" if (has_file and not is_loading) else "disabled")
+        self.sharp_edges_button.config(state="normal" if (has_file and not is_loading) else "disabled")
         self.degenerate_faces_button.config(state="normal" if (has_file and not is_loading) else "disabled")
         self.flipped_normals_button.config(state="normal" if (has_file and not is_loading) else "disabled")
 
