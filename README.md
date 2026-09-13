@@ -1,7 +1,7 @@
 # 🧠 **MODELOSCOPE**
 
 **Modeloscope** is a project for analyzing, visualizing, and inspecting 3D meshes.
-It is light weight, performance efficient and beginner friendly and supports file formats such as `.stl`, `.off`, `.ply`, `obj`, `.gltf` and `.glb`.
+It is light weight, performance efficient and supports file formats such as `.stl`, `.off`, `.ply`, `obj`, `.gltf` and `.glb`.
 
 
 ## 🚀 FEATURES
@@ -20,16 +20,17 @@ It is light weight, performance efficient and beginner friendly and supports fil
 * Pointcloud render
 
 ### 🧪 **Inspectors**
-* Boundary edges inspection
+* Duplicate vertices inspection
 * Non manifold edges inspection
-* Face normals inspection
+* Sharp edges inspection
+* Degenerate faces inspection
 * Flipped normals inspection
 
 ### ❤ **Enhancements**
 * Generate and Export analysis report
 * Custom rendering pipeline using VisPy
 * Smooth camera controls (rotate, zoom, reset)
-* Highlight overlay regions on inspection
+* Highlight heatmap regions on inspection
 
 
 ## 🧱 ARCHITECTURE OVERVIEW
