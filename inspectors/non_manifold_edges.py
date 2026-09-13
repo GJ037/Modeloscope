@@ -1,5 +1,4 @@
 import numpy as np
-from collections import defaultdict
 
 
 def inspect_non_manifold_edges(model):
@@ -8,8 +7,8 @@ def inspect_non_manifold_edges(model):
 
     faces = model.faces
     vertex_count = len(model.vertices)
-
-    edge_count = defaultdict(int)
+    
+    edge_count = {}
 
     for v0, v1, v2 in faces:
         edges = [
@@ -18,8 +17,12 @@ def inspect_non_manifold_edges(model):
             tuple(sorted((v2, v0)))
         ]
 
-        for e in edges:
-            edge_count[e] += 1
+        for edge in edges:
+            if edge in edge_count:
+                edge_count[edge] += 1
+
+            else:
+                edge_count[edge] = 1
 
     values = np.zeros(vertex_count)
 

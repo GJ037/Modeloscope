@@ -12,9 +12,7 @@ def inspect_flipped_normals(model):
     values = np.zeros(len(vertices))
 
     for v0, v1, v2 in faces:
-        p0 = vertices[v0]
-        p1 = vertices[v1]
-        p2 = vertices[v2]
+        p0, p1, p2 = vertices[v0], vertices[v1], vertices[v2]
 
         normal = np.cross(p1 - p0, p2 - p0)
         normalize = np.linalg.norm(normal)

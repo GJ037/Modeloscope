@@ -117,11 +117,7 @@ class AnalyzeInterface(Screen):
 
     def run_analysis(self):
         file_path = self.current_file
-
-        if not file_path or not os.path.exists(file_path):
-            messagebox.showerror("Invalid File", "File does not exist.")
-            return
-        
+  
         self.is_loading = True
         self.set_loading(True)
 
@@ -154,10 +150,7 @@ class AnalyzeInterface(Screen):
             return
 
         messagebox.showerror("Analysis Error", str(error))
-
-        self.is_loading = False
-        self.set_loading(False)
-        self.update_states()
+        self.clear()
 
     def export_report(self):
         file_path = filedialog.asksaveasfilename(

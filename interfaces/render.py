@@ -131,10 +131,6 @@ class RenderInterface(Screen):
     def draw_render(self):
         file_path = self.current_file
 
-        if not file_path or not os.path.exists(file_path):
-            messagebox.showerror("Invalid File", "File does not exist.")
-            return
-        
         self.is_loading = True
         self.set_loading(True)
 
@@ -165,11 +161,8 @@ class RenderInterface(Screen):
         if not self.is_active or current_id != self.request_id:
             return
 
-        messagebox.showerror("Render Error", str(error))
-
-        self.is_loading = False
-        self.set_loading(False)
-        self.update_states()
+        messagebox.showerror("Rendering Error", str(error))
+        self.clear()
 
     def reset_view(self):
         if not self.engine:
