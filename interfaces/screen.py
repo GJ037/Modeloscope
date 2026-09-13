@@ -24,8 +24,8 @@ class Screen(ttk.Frame):
         self.bottom_frame = ttk.Frame(self)
         self.bottom_frame.grid(row=1, column=0, sticky="nsew")
 
-        self.bottom_frame.columnconfigure(0, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
+        self.bottom_frame.columnconfigure(0, weight=1)
 
     def set_loading(self, active: bool):
         self.controller.config(cursor="watch" if active else "")

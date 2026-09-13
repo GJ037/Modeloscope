@@ -2,13 +2,12 @@ from vispy import scene
 from vispy.color import Color
 
 
-def render_flat(engine, model):
-    if model is None:
-        raise ValueError("Model is None")
+def render_flat(engine, mesh):
+    if mesh is None:
+        raise ValueError("Mesh is None")
 
     mesh = scene.visuals.Mesh(
-        vertices=model.vertices,
-        faces=model.faces,
+        vertices=mesh.vertices, faces=mesh.faces,
         color=Color("white")
     )
 

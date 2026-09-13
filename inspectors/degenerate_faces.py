@@ -1,12 +1,12 @@
 import numpy as np
 
 
-def inspect_degenerate_faces(model):
-    if model is None:
-        raise ValueError("Model is None")
+def inspect_degenerate_faces(mesh):
+    if mesh is None:
+        raise ValueError("Mesh is None")
 
-    faces = model.faces
-    vertices = model.vertices
+    faces = mesh.faces
+    vertices = mesh.vertices
     
     values = np.zeros(len(vertices))
 

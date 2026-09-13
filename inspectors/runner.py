@@ -1,5 +1,5 @@
 from functions.loader import load_mesh
-from inspectors.overlay import heatmap
+from inspectors.heatmap import render_heatmap
 from inspectors.duplicate_vertices import inspect_duplicate_vertices
 from inspectors.sharp_edges import inspect_sharp_edges
 from inspectors.non_manifold_edges import inspect_non_manifold_edges
@@ -33,7 +33,7 @@ def inspect(engine, mesh, inspector):
     engine.clear_all()
 
     values = inspector(mesh)
-    heatmap(engine, mesh, values)
+    render_heatmap(engine, mesh, values)
 
     engine.reset_view()
     engine.set_axis(False)

@@ -1,13 +1,13 @@
 import numpy as np
 
 
-def inspect_non_manifold_edges(model):
-    if model is None:
-        raise ValueError("Model is None")
+def inspect_non_manifold_edges(mesh):
+    if mesh is None:
+        raise ValueError("Mesh is None")
 
-    faces = model.faces
-    vertex_count = len(model.vertices)
+    faces = mesh.faces
     
+    vertex_count = len(mesh.vertices)
     edge_count = {}
 
     for v0, v1, v2 in faces:

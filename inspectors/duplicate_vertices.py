@@ -1,11 +1,11 @@
 import numpy as np
 
 
-def inspect_duplicate_vertices(model):
-    if model is None:
-        raise ValueError("Model is None")
+def inspect_duplicate_vertices(mesh):
+    if mesh is None:
+        raise ValueError("Mesh is None")
 
-    vertices = model.vertices
+    vertices = mesh.vertices
     
     values = np.zeros(len(vertices))
     visited = {}

@@ -1,12 +1,12 @@
 import numpy as np
 
 
-def inspect_flipped_normals(model):
-    if model is None:
-        raise ValueError("Model is None")
+def inspect_flipped_normals(mesh):
+    if mesh is None:
+        raise ValueError("Mesh is None")
 
-    faces = model.faces
-    vertices = model.vertices
+    faces = mesh.faces
+    vertices = mesh.vertices
 
     mesh_center = np.mean(vertices, axis=0)
     values = np.zeros(len(vertices))
