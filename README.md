@@ -110,58 +110,65 @@ python launch.py
 
 ## 📈 VERSION HIGLIGHTS
 
-### v3.6 (Latest)
-* Overlay Loading
-* Altered Inspection Modes
-* Altered Model Support
+### v3.7 (Final)
+* New analysis modes
+* New inspection modes
+* Various improvements
+
+### v3.6
+* Overlay loading
+* Altered inspection modes
+* Altered model support
 
 ### v3.5
-* Screen Scaling
-* Screen Layout
-* Cursor Feedback
-* Updated Libraries
+* Screen scaling
+* Screen layout
+* Cursor feedback
+* Updated libraries
 
 ### v3.4
-* Added Threading
-* Async Behaviour
-* Flow Changes
+* Added threading
+* Async behaviour
+* Flow changes
 
 ### v3.3
-* Changed Clear Button
-* Various Improvements
-* State Handling
-* Quality Additions
+* Changed clear Button
+* Various improvements
+* State handling
+* Quality additions
 
 ### v3.2
-* Added New Renderer
-* New Camera Movement
-* Exception Handeling
-* Fxied Hidden Bugs
-* Quality Additions
+* Added new renderer
+* New camera movement
+* Exception handeling
+* Fxied hidden bugs
+* Quality additions
 
 ### v3.1
-* Pipeline Standardization
-* Better Error Handling
-* Fixed Hidden Bugs
+* Pipeline standardization
+* Better error handling
+* Fixed hidden bugs
 
 ### v3.0
 * Introduced inspection pipeline
-* Visual mesh inspection system
+* Visual inspection system
 
 ### v2.2
 * Removed SciPy dependency
 * Reduced build size
-* Architectural Overhaul
-* Improved UI Experience
+* Architectural uverhaul
+* Improved UI experience
 
 ### v2.1
-* Changed Viewport Background
-* Improved Shaded Rendering
-* Improved Pointcloud rendering
-* Fixed Packaging Issues
+* Changed viewport background
+* Improved shaded rendering
+* Improved pointcloud rendering
+* Fixed packaging issues
 
 ### v2.0
 * Introduced 3D renderer
+* Supports different visuals
 
 ### v1.0
-* Initial release with analysis engine
+* Introduced analysis pipeline
+* Contains multiple analysis
